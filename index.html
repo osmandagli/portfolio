@@ -52,6 +52,7 @@
       <li><a href="#route" data-sec="route"><span class="tw">▸</span> <b>L3</b> Network <i>traceroute</i></a></li>
       <li><a href="#thesis" data-sec="thesis"><span class="tw">▸</span> <b>L4</b> Transport <i>thesis</i></a></li>
       <li><a href="#projects" data-sec="projects"><span class="tw">▸</span> <b>L5</b> Session <i>projects</i></a></li>
+      <li><a href="#encodings" data-sec="encodings"><span class="tw">▸</span> <b>L6</b> Presentation <i>iconv</i></a></li>
       <li><a href="#now" data-sec="now"><span class="tw">▸</span> <b>L7</b> Application <i>now</i></a></li>
       <li><a href="#connect" data-sec="connect"><span class="tw">▸</span> <b>SYN</b> Open a connection</a></li>
     </ol>
@@ -110,12 +111,12 @@
         <dl class="spec" aria-label="Quick facts">
           <div><dt>role</dt><dd>DevOps engineer</dd></div>
           <div><dt>studying</dt><dd>MEng, Politecnico di Milano</dd></div>
-          <div><dt>cert</dt><dd>CKA</dd></div>
           <div><dt>lang</dt><dd>Go · Python · Bash</dd></div>
           <div><dt>likes</dt><dd>XDP, AF_XDP, eBPF, QUIC</dd></div>
-          <div><dt>speaks</dt><dd>Türkçe · English · Italiano (B1)</dd></div>
           <div><dt>based</dt><dd>Milano, IT · open to relocate</dd></div>
-          <div><dt>status</dt><dd><span class="dot live"></span> open to opportunities</dd></div>
+          <div><dt>status</dt><dd><span class="dot live"></span> open to work</dd></div>
+          <div><dt>seeking</dt><dd>DevOps · platform · SRE</dd></div>
+          <div><dt>also</dt><dd>network software</dd></div>
         </dl>
       </div>
     </section>
@@ -464,6 +465,41 @@
       </div>
     </section>
 
+    <!-- ===================== L6 PRESENTATION ===================== -->
+    <section id="encodings" data-section="encodings">
+      <p class="kicker"><span class="layer">L6</span> Presentation · same data, different encodings</p>
+      <h2>iconv</h2>
+      <p class="section-sub">The presentation layer translates between formats. Here's me in a few of them.</p>
+
+      <div class="enc">
+        <div class="enc-block">
+          <p class="enc-cmd">$ iconv -f osman -t <span class="muted">&lt;locale&gt;</span></p>
+          <div class="enc-rows" role="table" aria-label="Spoken languages">
+            <div class="enc-row" role="row"><span>tr_TR.UTF-8</span><span>Türkçe</span><span class="ok">native</span></div>
+            <div class="enc-row" role="row"><span>en_US.UTF-8</span><span>English</span><span class="ok">professional</span></div>
+            <div class="enc-row" role="row"><span>it_IT.UTF-8</span><span>Italiano</span><span class="warn">B1, improving daily</span></div>
+          </div>
+        </div>
+
+        <div class="enc-block">
+          <p class="enc-cmd">$ openssl x509 -in osman.crt -noout -text</p>
+          <pre class="x509"><span class="k">Subject:</span> CN = Osman Bugra Dagli
+<span class="k">Issuer:</span>  O = The Linux Foundation, OU = CNCF
+<span class="k">X509v3 Extended Key Usage:</span>
+    <b>Certified Kubernetes Administrator (CKA)</b>
+<span class="k">Verify return code:</span> <span class="ok">0 (ok)</span></pre>
+        </div>
+
+        <div class="enc-block enc-wide">
+          <p class="enc-cmd">$ iconv -f osman -t application/pdf &gt; cv.pdf</p>
+          <div class="enc-cv">
+            <p>The same story on one page, for people who prefer paper.</p>
+            <a class="btn" href="OsmanBugraDagli_CV.pdf" download>Download CV (PDF)</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ===================== L7 NOW ===================== -->
     <section id="now" data-section="now">
       <p class="kicker"><span class="layer">L7</span> Application · what's running right now</p>
@@ -472,7 +508,7 @@
         <div class="ps-row head" role="row"><span>PID</span><span>STAT</span><span>COMMAND</span></div>
         <div class="ps-row" role="row"><span>1550</span><span class="ok">R</span><span>writing up the <b>AF_XDP thesis</b>, graduating Dec 2026</span></div>
         <div class="ps-row" role="row"><span>4433</span><span class="ok">R</span><span>hardening <b>cloud-storage</b>: streaming uploads, quotas, tests</span></div>
-        <div class="ps-row" role="row"><span>8080</span><span class="ok">R</span><span>looking for a <b>DevOps / platform / SRE</b> role, in Milano or anywhere I can relocate</span></div>
+        <div class="ps-row" role="row"><span>8080</span><span class="ok">R</span><span>looking for <b>DevOps, platform or SRE</b> roles, and network software roles close to my thesis. Milano or relocation.</span></div>
         <div class="ps-row" role="row"><span>1100</span><span class="warn">S</span><span>practicing with <b>AON Milano Sport</b> for the next table tennis league match</span></div>
       </div>
     </section>

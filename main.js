@@ -259,14 +259,14 @@ Type <span class="acc">help</span> to see what's here. <span class="dim">tab com
     el: p,
   }));
 
-  const SECTIONS = { whoami: "#whoami", toolbox: "#toolbox", skills: "#toolbox", route: "#route", experience: "#route", thesis: "#thesis", projects: "#projects", now: "#now", connect: "#connect", contact: "#connect", "~": "#top", "/": "#top" };
+  const SECTIONS = { whoami: "#whoami", toolbox: "#toolbox", skills: "#toolbox", route: "#route", experience: "#route", thesis: "#thesis", projects: "#projects", encodings: "#encodings", iconv: "#encodings", languages: "#encodings", now: "#now", connect: "#connect", contact: "#connect", "~": "#top", "/": "#top" };
   const goTo = (sel) => { closeShell(); $(sel).scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" }); };
 
   const COMMANDS = {
     help: () => `<span class="acc">navigation</span>
   ls [dir]            list files
   cat &lt;file&gt;          read a file
-  cd &lt;section&gt;        jump to: whoami, skills, experience, thesis, projects, now, contact
+  cd &lt;section&gt;        jump to: whoami, skills, experience, thesis, projects, iconv, now, contact
   open &lt;project&gt;      jump to a project
 
 <span class="acc">about osman</span>
@@ -276,6 +276,8 @@ Type <span class="acc">help</span> to see what's here. <span class="dim">tab com
   traceroute osman    career path
   modinfo &lt;skill&gt;     filter by skill (e.g. modinfo af_xdp)
   bench               thesis numbers
+  iconv -l            languages osman speaks
+  openssl x509        his certificate
   cosmic-ray          flip a bit in the ASPIS demo
 
 <span class="acc">network</span>
@@ -373,9 +375,9 @@ Type <span class="acc">help</span> to see what's here. <span class="dim">tab com
       lines.push(`\n--- ${host} ping statistics ---\n4 packets transmitted, 4 received, <span class="ok">0% packet loss</span>\n<span class="acc">he's up. send an email → cat contact.txt</span>`);
       return lines.join("\n");
     },
-    dig: () => `;; QUESTION SECTION:\n;osman.            IN  A\n\n;; ANSWER SECTION:\nosman.     300  IN  TXT  "devops engineer, CKA"\nosman.     300  IN  LOC  "Milano, IT (open to relocate)"\nosman.     300  IN  MX   10 <a href="mailto:osman.dagli687@gmail.com">osman.dagli687@gmail.com</a>\n\n;; Query time: 0 msec`,
-    curl: () => `HTTP/3 200\nalt-svc: h3=":443"; ma=86400\nx-role: devops-engineer\nx-cert: CKA\nx-langs: go, python, bash\nx-interests: af_xdp, ebpf, quic, kernels\nx-location: milano; relocate=ok\nx-open-to-work: true\ncache-control: no-store`,
-    ss: () => `State   Recv-Q  Send-Q  Local Address:Port   Process\nLISTEN  0       128     0.0.0.0:22           ("sshd")\nLISTEN  0       128     0.0.0.0:443          ("new-opportunities")\nUNCONN  0       0       0.0.0.0:4433         ("cloud-storage",quic)\nXDP     0       0       eth0:queue0          ("moq-relay",af_xdp,zc)`,
+    dig: () => `;; QUESTION SECTION:\n;osman.            IN  A\n\n;; ANSWER SECTION:\nosman.     300  IN  TXT  "devops engineer, CKA"\nosman.     300  IN  TXT  "open to: devops, platform, sre; also network software"\nosman.     300  IN  LOC  "Milano, IT (open to relocate)"\nosman.     300  IN  MX   10 <a href="mailto:osman.dagli687@gmail.com">osman.dagli687@gmail.com</a>\n\n;; Query time: 0 msec`,
+    curl: () => `HTTP/3 200\nalt-svc: h3=":443"; ma=86400\nx-role: devops-engineer\nx-cert: CKA\nx-langs: go, python, bash\nx-interests: af_xdp, ebpf, quic, kernels\nx-location: milano; relocate=ok\nx-open-to: devops, platform, sre\nx-also-open-to: network-software\ncache-control: no-store`,
+    ss: () => `State   Recv-Q  Send-Q  Local Address:Port   Process\nLISTEN  0       128     0.0.0.0:22           ("sshd")\nLISTEN  0       128     0.0.0.0:443          ("devops-roles")\nLISTEN  0       64      0.0.0.0:8443         ("network-software-roles")\nUNCONN  0       0       0.0.0.0:4433         ("cloud-storage",quic)\nXDP     0       0       eth0:queue0          ("moq-relay",af_xdp,zc)`,
     uname: (args) => args.includes("-a") ? `Linux osman 6.x #1 SMP PREEMPT_DYNAMIC x86_64 GNU/Linux` : `Linux`,
     theme: (args) => `theme: ${setTheme(args[0] === "light" || args[0] === "dark" ? args[0] : undefined)}`,
     history: () => history.map((h, i) => `${String(i + 1).padStart(4)}  ${esc(h)}`).join("\n"),
@@ -390,6 +392,8 @@ Type <span class="acc">help</span> to see what's here. <span class="dim">tab com
     ":q": () => `<span class="dim">phew.</span>`,
     emacs: () => `<span class="dim">emacs: command not found (the jury is still out)</span>`,
     hire: () => { goTo("#connect"); return ""; },
+    iconv: () => `tr_TR.UTF-8   Türkçe     <span class="ok">native</span>\nen_US.UTF-8   English    <span class="ok">professional</span>\nit_IT.UTF-8   Italiano   <span class="acc">B1</span>`,
+    openssl: () => `Subject: CN = Osman Bugra Dagli\nIssuer:  O = The Linux Foundation, OU = CNCF\nX509v3 Extended Key Usage:\n    <span class="acc">Certified Kubernetes Administrator (CKA)</span>\nVerify return code: <span class="ok">0 (ok)</span>`,
     "cosmic-ray": () => {
       flipBit();
       closeShell();
