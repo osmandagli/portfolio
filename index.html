@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Osman Bugra Dagli — DevOps & Systems</title>
+<meta name="description" content="Osman Bugra Dagli — DevOps engineer (CKA) and MSc student at Politecnico di Milano working below the abstraction: Kubernetes, AF_XDP, eBPF/XDP, QUIC, Linux internals, Go.">
+<meta property="og:title" content="Osman Bugra Dagli — DevOps & Systems">
+<meta property="og:description" content="DevOps engineer. Kubernetes by day, kernel-bypass networking by night.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0B0E12">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230B0E12'/%3E%3Ctext x='5' y='22' font-family='monospace' font-size='16' font-weight='700' fill='%23FFB547'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="style.css">
+<script>
+  // Apply saved theme before paint to avoid a flash.
+  try { var t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+</head>
+<body>
+
+<!-- ============================================================
+     Anything with class="todo" is a placeholder: replace the text
+     with your real info, then remove the class.
+     ============================================================ -->
+
+<header class="topbar">
+  <a class="prompt" href="#top" aria-label="Back to top">
+    <span class="p-user">osman</span><span class="p-at">@</span><span class="p-host">dagli</span><span class="p-path">:~$</span><span class="cursor" aria-hidden="true"></span>
+  </a>
+  <div class="topbar-actions">
+    <button class="btn-ghost" id="open-shell" type="button" title="Open a shell (press /)">
+      <span class="kbd">/</span> shell
+    </button>
+    <button class="btn-ghost icon" id="theme-toggle" type="button" aria-label="Toggle light/dark theme">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.39 5.39 0 0 1-4.4 2.26 5.4 5.4 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="layout" id="top">
+
+  <!-- Wireshark-style packet dissection = site navigation -->
+  <aside class="rail" aria-label="Sections">
+    <p class="rail-title">Packet details</p>
+    <ol class="dissect">
+      <li><a href="#top" data-sec="top"><span class="tw">▸</span> Frame 1: 1 visitor on wire</a></li>
+      <li><a href="#whoami" data-sec="whoami"><span class="tw">▸</span> <b>L1</b> Physical <i>whoami</i></a></li>
+      <li><a href="#toolbox" data-sec="toolbox"><span class="tw">▸</span> <b>L2</b> Data link <i>lsmod</i></a></li>
+      <li><a href="#route" data-sec="route"><span class="tw">▸</span> <b>L3</b> Network <i>traceroute</i></a></li>
+      <li><a href="#thesis" data-sec="thesis"><span class="tw">▸</span> <b>L4</b> Transport <i>thesis</i></a></li>
+      <li><a href="#projects" data-sec="projects"><span class="tw">▸</span> <b>L5</b> Session <i>projects</i></a></li>
+      <li><a href="#now" data-sec="now"><span class="tw">▸</span> <b>L7</b> Application <i>now</i></a></li>
+      <li><a href="#connect" data-sec="connect"><span class="tw">▸</span> <b>SYN</b> Open a connection</a></li>
+    </ol>
+    <div class="rail-hex" aria-hidden="true" id="rail-hex"></div>
+    <p class="rail-hint">Press <span class="kbd">/</span> for a shell. Try <code>help</code>.</p>
+  </aside>
+
+  <main>
+
+    <!-- ===================== HERO ===================== -->
+    <section class="hero" data-section="top">
+      <p class="kicker"><span class="dot live"></span> Frame 1 · captured just now · <span id="uptime">uptime 0s</span></p>
+      <h1>Osman Bugra Dagli</h1>
+      <p class="lede">DevOps engineer who likes the layers <em>underneath</em>.</p>
+      <p class="hero-copy">
+        I'm a DevOps engineer in Milan. I keep infrastructure running, and I like finding out how it works
+        underneath: Linux, networking, and the kernel.
+      </p>
+      <div class="hero-cta">
+        <a class="btn" href="#whoami">Dissect this packet ↓</a>
+        <button class="btn btn-outline" type="button" data-open-shell>Open a shell <span class="kbd">/</span></button>
+      </div>
+
+      <figure class="capture" aria-label="Simulated packet capture of you visiting this site">
+        <figcaption>
+          <span class="cap-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>tcpdump -i eth0 -nn 'host osman'</span>
+          <span class="cap-count" id="cap-count">0 packets</span>
+        </figcaption>
+        <div class="cap-body" id="capture" role="log" aria-live="off"></div>
+      </figure>
+    </section>
+
+    <!-- ===================== L1 WHOAMI ===================== -->
+    <section id="whoami" data-section="whoami">
+      <p class="kicker"><span class="layer">L1</span> Physical · the actual hardware</p>
+      <h2>whoami</h2>
+      <div class="split">
+        <div class="prose">
+          <p>
+            I'm a DevOps engineer and a <abbr title="Certified Kubernetes Administrator">CKA</abbr>. At Turkish Aerospace (TUSAS)
+            I built and ran containerized infrastructure on Kubernetes, led the move of application servers like Tomcat off
+            traditional VMs, and tuned the GitLab CI/CD that shipped it all. Before that, at ASELSAN, I got legacy software
+            that <em>couldn't</em> be containerized running on Kubernetes anyway, with KubeVirt.
+          </p>
+          <p>
+            I think the best ops people understand the layer below the one they operate, so I went there on purpose.
+            I wrote a container runtime from raw namespaces and cgroups and a connection tracker in eBPF/XDP. I also
+            hardened an embedded RTOS kernel against radiation-induced bit flips with LLVM. Now I'm finishing a master's thesis on kernel-bypass networking at Politecnico di Milano.
+          </p>
+          <p>
+            Off the terminal I play table tennis for AON Milano Sport in the Italian league.
+          </p>
+        </div>
+
+        <dl class="spec" aria-label="Quick facts">
+          <div><dt>role</dt><dd>DevOps engineer</dd></div>
+          <div><dt>studying</dt><dd>MEng, Politecnico di Milano</dd></div>
+          <div><dt>cert</dt><dd>CKA</dd></div>
+          <div><dt>lang</dt><dd>Go · Python · Bash</dd></div>
+          <div><dt>likes</dt><dd>XDP, AF_XDP, eBPF, QUIC</dd></div>
+          <div><dt>speaks</dt><dd>Türkçe · English · Italiano (B1)</dd></div>
+          <div><dt>based</dt><dd>Milano, IT · open to relocate</dd></div>
+          <div><dt>status</dt><dd><span class="dot live"></span> open to opportunities</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- ===================== L2 TOOLBOX ===================== -->
+    <section id="toolbox" data-section="toolbox">
+      <p class="kicker"><span class="layer">L2</span> Data link · what connects everything</p>
+      <h2>lsmod</h2>
+      <p class="section-sub">Modules loaded into this engineer. Click one to see where it was used, at work or in projects.</p>
+
+      <div class="lsmod" role="table" aria-label="Skills">
+        <div class="lsmod-row head" role="row">
+          <span role="columnheader">Module</span><span role="columnheader">Area</span><span role="columnheader">Used by</span>
+        </div>
+        <!-- data-skill must match tokens in data-skills on .proj and .hop -->
+        <button class="lsmod-row" data-skill="kubernetes" role="row"><span>kubernetes <small class="badge">CKA</small></span><span>orchestration</span><span>tusas, aselsan</span></button>
+        <button class="lsmod-row" data-skill="helm" role="row"><span>helm</span><span>packaging</span><span>tusas</span></button>
+        <button class="lsmod-row" data-skill="cicd" role="row"><span>gitlab_ci</span><span>delivery</span><span>tusas</span></button>
+        <button class="lsmod-row" data-skill="kubevirt" role="row"><span>kubevirt</span><span>virtualization</span><span>aselsan</span></button>
+        <button class="lsmod-row" data-skill="go" role="row"><span>go</span><span>language</span><span>containerrt, cloud_storage</span></button>
+        <button class="lsmod-row" data-skill="python" role="row"><span>python</span><span>language</span><span>tusas, cd2alloy, thesis</span></button>
+        <button class="lsmod-row" data-skill="c" role="row"><span>c · c++</span><span>language</span><span>miosix_aspis, conntracker, thesis</span></button>
+        <button class="lsmod-row" data-skill="llvm" role="row"><span>llvm · clang</span><span>compilers</span><span>miosix_aspis</span></button>
+        <button class="lsmod-row" data-skill="embedded" role="row"><span>stm32 · miosix</span><span>embedded</span><span>miosix_aspis</span></button>
+        <button class="lsmod-row" data-skill="formal" role="row"><span>alloy</span><span>formal methods</span><span>cd2alloy</span></button>
+        <button class="lsmod-row" data-skill="linux" role="row"><span>linux</span><span>systems</span><span>almost everything</span></button>
+        <button class="lsmod-row" data-skill="containers" role="row"><span>namespaces · cgroups</span><span>kernel</span><span>containerrt, tusas</span></button>
+        <button class="lsmod-row" data-skill="xdp" role="row"><span>ebpf · xdp</span><span>kernel</span><span>conntracker, thesis</span></button>
+        <button class="lsmod-row" data-skill="afxdp" role="row"><span>af_xdp</span><span>kernel bypass</span><span>thesis</span></button>
+        <button class="lsmod-row" data-skill="quic" role="row"><span>quic · http3</span><span>networking</span><span>thesis, cloud_storage</span></button>
+        <button class="lsmod-row" data-skill="networking" role="row"><span>tcp_ip</span><span>networking</span><span>conntracker, thesis, cloud_storage</span></button>
+        <button class="lsmod-row" data-skill="perf" role="row"><span>perf</span><span>profiling</span><span>thesis</span></button>
+        <button class="lsmod-row" data-skill="bash" role="row"><span>bash</span><span>glue</span><span>everything</span></button>
+      </div>
+    </section>
+
+    <!-- ===================== L3 ROUTE ===================== -->
+    <section id="route" data-section="route">
+      <p class="kicker"><span class="layer">L3</span> Network · how I got here</p>
+      <h2>traceroute osman</h2>
+      <p class="section-sub mono">traceroute to osman (present), 30 hops max, 60 byte packets</p>
+
+      <ol class="hops">
+        <li class="hop" data-skills="linux python networking">
+          <details>
+            <summary>
+              <span class="hop-n">1</span>
+              <span class="hop-host"><b>BEng Computer Engineering</b> <span class="muted">@ Ankara University</span></span>
+              <span class="hop-rtt">2018 – 2023</span>
+            </summary>
+            <ul class="hop-body">
+              <li>Graduated with a <b>3.81 / 4.0</b> GPA</li>
+              <li>Started working in industry during the degree, first as an intern at ASELSAN, then at TUSAS</li>
+            </ul>
+          </details>
+        </li>
+        <li class="hop" data-skills="kubernetes kubevirt linux">
+          <details>
+            <summary>
+              <span class="hop-n">2</span>
+              <span class="hop-host"><b>DevOps Intern</b> <span class="muted">@ ASELSAN</span></span>
+              <span class="hop-rtt">Aug – Sep 2022</span>
+            </summary>
+            <ul class="hop-body">
+              <li>Ran legacy software that couldn't be containerized on Kubernetes using <b>KubeVirt</b>, so VMs and containers shared one control plane</li>
+            </ul>
+          </details>
+        </li>
+        <li class="hop" data-skills="kubernetes helm cicd containers linux bash python">
+          <details open>
+            <summary>
+              <span class="hop-n">3</span>
+              <span class="hop-host"><b>DevOps Engineer</b> <span class="muted">@ Turkish Aerospace (TUSAS)</span></span>
+              <span class="hop-rtt">Nov 2022 – Sep 2024</span>
+            </summary>
+            <ul class="hop-body">
+              <li>Built and maintained containerized infrastructure on <b>Kubernetes</b></li>
+              <li><b>Led the migration</b> of application servers (e.g. Tomcat) from OS-based deployments to Kubernetes</li>
+              <li>Troubleshot and optimized <b>GitLab CI/CD</b> pipelines for integration and deployment</li>
+              <li>Wrote Bash and Python automation that took repetitive work off the team</li>
+            </ul>
+          </details>
+        </li>
+        <li class="hop" data-skills="afxdp xdp quic perf networking linux">
+          <details open>
+            <summary>
+              <span class="hop-n">4</span>
+              <span class="hop-host"><b>MEng</b> <span class="muted">@ Politecnico di Milano</span></span>
+              <span class="hop-rtt">Sep 2024 – Dec 2026</span>
+            </summary>
+            <ul class="hop-body">
+              <li>Coursework: Network Computing, Computing Infrastructures, Advanced OS, Advanced Algorithms, IoT</li>
+              <li>Thesis: kernel-bypass networking for a Media-over-QUIC relay (<a class="link" href="#thesis">read more</a>)</li>
+            </ul>
+          </details>
+        </li>
+        <li class="hop hop-next">
+          <div class="hop-static">
+            <span class="hop-n">5</span>
+            <span class="hop-host">* * * <span class="muted">request timed out. Maybe your team is the next hop?</span></span>
+            <a class="hop-rtt link" href="#connect">send SYN →</a>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ===================== L4 THESIS ===================== -->
+    <section id="thesis" data-section="thesis" class="thesis" data-skills="afxdp xdp quic perf networking linux python c">
+      <p class="kicker"><span class="layer">L4</span> Transport · my master's thesis</p>
+      <h2>Thesis</h2>
+
+      <div class="thesis-head">
+        <h3 class="thesis-title">Accelerating a Media-over-QUIC Relay with AF_XDP Kernel-Bypass Networking</h3>
+        <p class="thesis-meta">Osman Bugra Dagli · Politecnico di Milano · Jan 2025 – present · in progress</p>
+      </div>
+
+      <div class="thesis-abstract">
+        <p>
+          Media over QUIC (MoQ) is an emerging IETF protocol for live media delivery, and relays sit at its core.
+          Every packet they forward passes through the kernel's network stack. This thesis measures how much that
+          costs in Meta's <strong>moxygen</strong> relay and removes it.
+        </p>
+        <p>
+          A <code>perf</code>-based CPU-time breakdown shows that kernel packet I/O takes a significant share of each core's
+          time. I built an <strong>AF_XDP zero-copy</strong> fast path and connected it to the QUIC stack through a
+          non-invasive socket-injection seam, so the relay's entire UDP RX/TX path runs over AF_XDP
+          <strong>with zero changes to the relay's source</strong>.
+        </p>
+      </div>
+
+          <div class="bench" role="img" aria-label="Single-core RX throughput: AF_XDP zero-copy about 1.55 million packets per second versus tuned kernel recvmmsg plus GRO about 0.65 million">
+            <p class="bench-title">single-core RX throughput <span class="muted">(Mpps, higher is better)</span></p>
+            <div class="bench-row">
+              <span class="bench-label">kernel · recvmmsg + GRO (tuned)</span>
+              <span class="bench-bar"><i style="--w: 41.9%"></i></span>
+              <span class="bench-val">~0.65</span>
+            </div>
+            <div class="bench-row win">
+              <span class="bench-label">AF_XDP · zero-copy</span>
+              <span class="bench-bar"><i style="--w: 100%"></i></span>
+              <span class="bench-val">~1.55</span>
+            </div>
+            <p class="bench-foot"><b>~2.4×</b> per core</p>
+          </div>
+
+          <div class="paths">
+            <div>
+              <p class="path-title muted">before: every packet through the kernel</p>
+              <ol class="flow">
+                <li><span>NIC</span></li>
+                <li><span>driver · sk_buff</span></li>
+                <li><span>UDP stack</span></li>
+                <li><span>recvmmsg</span></li>
+                <li><span>QUIC</span></li>
+                <li><span>relay</span></li>
+              </ol>
+            </div>
+            <div>
+              <p class="path-title">after: kernel bypass</p>
+              <ol class="flow hot">
+                <li><span>NIC</span></li>
+                <li><span>XDP redirect</span></li>
+                <li><span>UMEM (zero-copy)</span></li>
+                <li><span>AF_XDP socket</span></li>
+                <li><span>injection seam</span></li>
+                <li><span>QUIC</span></li>
+                <li><span>relay</span></li>
+              </ol>
+            </div>
+          </div>
+
+
+      <h4 class="thesis-sub">Contributions</h4>
+      <ul class="bullets thesis-list">
+        <li>A <code>perf</code>-based pipeline that breaks down per-core CPU time along the relay's data path</li>
+        <li>An AF_XDP zero-copy RX/TX path reaching <b>~1.55 Mpps on one core</b>, against ~0.65 Mpps for a <em>tuned</em> kernel baseline (recvmmsg + GRO)</li>
+        <li>A socket-injection seam, built on proxygen's socket factory, that moves the relay onto AF_XDP without the relay knowing</li>
+        <li>A reproducible <b>CloudLab testbed</b>: one profile provisions the machines, applies the patch series to moxygen and proxygen, syncs clocks with PTP for one-way latency, and runs the fan-out, throughput and flame-graph experiments</li>
+      </ul>
+
+      <div class="thesis-links">
+        <a class="btn btn-outline" href="https://github.com/osmandagli/cloudlab-profile" target="_blank" rel="noopener">Testbed and patches ↗</a>
+        <a class="btn btn-outline" href="https://github.com/osmandagli/moxygen" target="_blank" rel="noopener">moxygen fork ↗</a>
+      </div>
+    </section>
+
+    <!-- ===================== L5 PROJECTS ===================== -->
+    <section id="projects" data-section="projects">
+      <p class="kicker"><span class="layer">L5</span> Session · where my own time goes</p>
+      <h2>Projects</h2>
+      <p class="section-sub filter-status" id="filter-status" aria-live="polite">Things I built to see how they work. Filter with the <a href="#toolbox">lsmod</a> table above.</p>
+
+      <div class="projects">
+
+        <!-- ---------- ASPIS x MIOSIX ---------- -->
+        <article class="proj featured" data-skills="llvm embedded c linux" id="p-aspis">
+          <div class="hexline" data-hex="miosix+aspis"></div>
+          <header>
+            <h3>Radiation-hardening Miosix</h3>
+            <span class="tag">LLVM · STM32 · 2026</span>
+          </header>
+          <p>
+            In orbit, a charged particle can flip a bit in a register or in RAM. That's a <strong>single-event upset</strong>,
+            and the code keeps running on a wrong value. <strong>ASPIS</strong> is an LLVM plugin from Politecnico di Milano's HEAPLab
+            that hardens code against this at the IR level. I integrated it into the build of <strong>Miosix</strong>, an embedded
+            RTOS, so the kernel itself compiles hardened for an STM32F407.
+          </p>
+
+          <div class="seu" id="seu">
+            <p class="seu-title">Try it: click any bit of <code>x</code> to hit it with a cosmic ray. EDDI keeps a shadow copy of every value and compares the two before the value is used.</p>
+            <div class="seu-reg">
+              <span class="seu-name">x</span>
+              <span class="bits" id="seu-a" role="group" aria-label="Register x, click a bit to flip it"></span>
+              <span class="seu-hex" id="seu-a-hex">0x2A</span>
+            </div>
+            <div class="seu-reg">
+              <span class="seu-name">x′ <span class="muted">shadow</span></span>
+              <span class="bits" id="seu-b" aria-hidden="true"></span>
+              <span class="seu-hex">0x2A</span>
+            </div>
+            <p class="seu-status" id="seu-status" aria-live="polite"><code>icmp eq x, x′</code> is true, so execution continues.</p>
+            <button type="button" class="btn-ghost" id="seu-reset" hidden>Reset</button>
+          </div>
+
+          <ol class="flow">
+            <li><span>C / C++</span></li>
+            <li><span>clang</span><small>emits LLVM IR</small></li>
+            <li><span>llvm-link</span></li>
+            <li><span>ASPIS passes</span><small>EDDI + CFCSS</small></li>
+            <li><span>codegen</span></li>
+            <li><span>.elf → .bin</span><small>objcopy</small></li>
+            <li><span>STM32F407</span></li>
+          </ol>
+          <ul class="bullets">
+            <li>A CMake module that sends any target through the clang → opt → link pipeline and skips assembly files automatically</li>
+            <li>Every pass can be picked from the build script: data duplication (<code>eddi</code>, <code>reddi</code>, <code>seddi</code>, <code>fdsc</code>) and control-flow checking (<code>cfcss</code>, <code>rasm</code>, <code>inter-rasm</code>, <code>racfed</code>)</li>
+            <li>Compiled the <b>whole kernel</b> through ASPIS, then moved to selective hardening with annotations on the scheduler</li>
+            <li>A clang toolchain file that can point at any LLVM install, plus an objcopy step that produces a flashable <code>.bin</code></li>
+          </ul>
+          <footer>
+            <span class="stack">c++ · llvm · cmake · miosix · stm32</span>
+            <a class="link" href="https://github.com/osmandagli/miosix-kernel/tree/clang" target="_blank" rel="noopener">source ↗</a>
+          </footer>
+        </article>
+
+        <!-- ---------- CONTAINERRT ---------- -->
+        <article class="proj featured" data-skills="go containers linux" id="p-containerrt">
+          <div class="hexline" data-hex="containerrt"></div>
+          <header>
+            <h3>containerrt</h3>
+            <span class="tag">Go · Mar 2026</span>
+          </header>
+          <p>
+            A minimal container runtime written from scratch on raw Linux primitives, with no runc and no libcontainer.
+            I wanted to know exactly what <code>docker run</code> does before the process starts.
+          </p>
+          <ol class="flow">
+            <li><span>clone()</span><small>NEWUTS · NEWPID · NEWNS</small></li>
+            <li><span>pivot_root</span><small>host root fully unmounted</small></li>
+            <li><span>tmpfs /dev</span><small>essential device nodes</small></li>
+            <li><span>cgroup v2</span><small>limits applied by parent</small></li>
+            <li><span>pipe barrier</span><small>child waits for setup</small></li>
+            <li><span>exec</span></li>
+          </ol>
+          <ul class="bullets">
+            <li>Isolation with <b>UTS, PID and mount namespaces</b></li>
+            <li><code>pivot_root</code> instead of <code>chroot</code>: the host root is unmounted, not just hidden</li>
+            <li>An ephemeral <code>/dev</code> tmpfs with only the essential device nodes</li>
+            <li>A <b>pipe-based sync barrier</b> between parent and child ensures the workload starts inside its cgroup v2 limits and can't race the setup</li>
+            <li>A real init: reaps zombies, forwards <code>SIGINT</code>/<code>SIGTERM</code>, and exits with the workload's code (128 + signal)</li>
+            <li>Tested with escape attempts, <code>pids.current</code> monitoring and OOM kills under <code>memory.max</code></li>
+          </ul>
+          <footer>
+            <span class="stack">go · namespaces · cgroups v2 · pivot_root</span>
+            <a class="link" href="https://github.com/osmandagli/container_runtime" target="_blank" rel="noopener">source ↗</a>
+          </footer>
+        </article>
+
+        <!-- ---------- CONNTRACKER ---------- -->
+        <article class="proj" data-skills="xdp networking linux" id="p-conntracker">
+          <div class="hexline" data-hex="conntracker"></div>
+          <header>
+            <h3>conntracker</h3>
+            <span class="tag">eBPF/XDP · May 2025</span>
+          </header>
+          <p>
+            Connection tracking and TCP fingerprinting that runs <strong>in the kernel at XDP</strong>, before the network
+            stack ever allocates an <code>sk_buff</code>.
+          </p>
+          <ul class="bullets">
+            <li>TCP and UDP <b>state machines</b> in eBPF, tracking per-connection metrics</li>
+            <li>Extracts TCP option sequences (MSS, SACK, timestamps, window scale) for OS and stack fingerprinting</li>
+            <li>A user-space daemon in C loads a YAML config, attaches the program, and serves stats and the ban list over HTTP</li>
+            <li><b>Count-Min sketch</b> and <b>Bloom filters</b> for fast threshold-triggered filtering in bounded memory</li>
+          </ul>
+          <footer>
+            <span class="stack">ebpf · xdp · probabilistic ds</span>
+            <a class="link" href="https://github.com/osmandagli/conntracker" target="_blank" rel="noopener">source ↗</a>
+          </footer>
+        </article>
+
+        <!-- ---------- CD2ALLOY ---------- -->
+        <article class="proj" data-skills="python formal" id="p-cd2alloy">
+          <div class="hexline" data-hex="cd2alloy"></div>
+          <header>
+            <h3>cd2alloy</h3>
+            <span class="tag">Python · formal methods</span>
+          </header>
+          <p>
+            Turns UML class diagrams into <strong>Alloy</strong> models, so a design can be model-checked instead of only
+            reviewed. Draw the diagram in PlantUML, export XMI, and open the generated <code>.als</code> in the Alloy Analyzer.
+          </p>
+          <ul class="bullets">
+            <li>XMI reader → class model (classes, association classes, enums) → Alloy translator</li>
+            <li>Chooses between Alloy base libraries depending on whether the diagram uses enums and attribute values</li>
+            <li>Checked against real Software Engineering 2 exam solutions</li>
+          </ul>
+          <footer>
+            <span class="stack">python · alloy · plantuml · xmi</span>
+            <a class="link" href="https://github.com/osmandagli/cd2alloy" target="_blank" rel="noopener">source ↗</a>
+          </footer>
+        </article>
+
+        <!-- ---------- CLOUD-STORAGE ---------- -->
+        <article class="proj wide" data-skills="go quic networking linux" id="p-cloud-storage">
+          <div class="hexline" data-hex="cloud-storage"></div>
+          <header>
+            <h3>cloud-storage</h3>
+            <span class="tag">Go · HTTP/3</span>
+          </header>
+          <p>
+            A self-hosted file server over <strong>HTTP/3 / QUIC</strong>. TCP+TLS and QUIC/UDP share one port.
+            Browsers arrive over TCP, see <code>Alt-Svc</code> and upgrade themselves.
+          </p>
+          <ul class="bullets">
+            <li>Filenames hardened against traversal and control/NUL bytes</li>
+            <li>Collision-safe writes that never overwrite a file</li>
+            <li>API-key auth middleware; the server refuses to start without a key</li>
+          </ul>
+          <footer>
+            <span class="stack">go · quic-go · chi</span>
+            <a class="link" href="https://github.com/osmandagli/cloud-storage" target="_blank" rel="noopener">source ↗</a>
+          </footer>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ===================== L7 NOW ===================== -->
+    <section id="now" data-section="now">
+      <p class="kicker"><span class="layer">L7</span> Application · what's running right now</p>
+      <h2>ps aux | grep now</h2>
+      <div class="ps" role="table" aria-label="Current activities">
+        <div class="ps-row head" role="row"><span>PID</span><span>STAT</span><span>COMMAND</span></div>
+        <div class="ps-row" role="row"><span>1550</span><span class="ok">R</span><span>writing up the <b>AF_XDP thesis</b>, graduating Dec 2026</span></div>
+        <div class="ps-row" role="row"><span>4433</span><span class="ok">R</span><span>hardening <b>cloud-storage</b>: streaming uploads, quotas, tests</span></div>
+        <div class="ps-row" role="row"><span>8080</span><span class="ok">R</span><span>looking for a <b>DevOps / platform / SRE</b> role, in Milano or anywhere I can relocate</span></div>
+        <div class="ps-row" role="row"><span>1100</span><span class="warn">S</span><span>practicing with <b>AON Milano Sport</b> for the next table tennis league match</span></div>
+      </div>
+    </section>
+
+    <!-- ===================== CONNECT ===================== -->
+    <section id="connect" data-section="connect">
+      <p class="kicker"><span class="layer">SYN</span> Open a connection</p>
+      <h2>Three-way handshake</h2>
+      <ol class="handshake">
+        <li><span class="hs-dir">→</span><span class="hs-flag">SYN</span><span>You send a message. Roles, collaboration, or just a good packet capture.</span></li>
+        <li><span class="hs-dir">←</span><span class="hs-flag">SYN-ACK</span><span>I reply, usually within a day.</span></li>
+        <li><span class="hs-dir">→</span><span class="hs-flag">ACK</span><span>Connection <span class="ok">ESTABLISHED</span>.</span></li>
+      </ol>
+      <div class="connect-links">
+        <a class="btn" href="mailto:osman.dagli687@gmail.com">osman.dagli687@gmail.com</a>
+        <a class="btn btn-outline" href="https://github.com/osmandagli" target="_blank" rel="noopener">GitHub ↗</a>
+        <a class="btn btn-outline todo" href="#" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a class="btn btn-outline" href="OsmanBugraDagli_CV.pdf" download>CV.pdf ↓</a>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="site-foot">
+  <span>© <span id="year">2026</span> Osman Bugra Dagli · Milano</span>
+  <span class="muted">Hand-written HTML/CSS/JS · no framework · no trackers · 0 cookies</span>
+</footer>
+
+<!-- ===================== SHELL ===================== -->
+<dialog class="shell" id="shell" aria-label="Interactive shell">
+  <div class="shell-bar">
+    <span class="cap-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span>visitor@osman: ~</span>
+    <button type="button" class="shell-close" id="shell-close" aria-label="Close shell">esc</button>
+  </div>
+  <div class="shell-out" id="shell-out" aria-live="polite"></div>
+  <form class="shell-in" id="shell-form" autocomplete="off">
+    <label for="shell-input" class="shell-ps1">visitor@osman:~$</label>
+    <input id="shell-input" type="text" spellcheck="false" autocapitalize="off" autocorrect="off">
+  </form>
+</dialog>
+
+<script src="main.js"></script>
+</body>
+</html>
