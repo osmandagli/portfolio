@@ -84,6 +84,7 @@ body {
   font: 400 17px/1.6 var(--f-sans);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  overflow-x: clip; /* clip doesn't make body a scroll container, which breaks sticky in Safari */
 }
 body::before { /* faint grid, like graph paper for packets */
   content: "";

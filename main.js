@@ -103,7 +103,12 @@
       railLinks.forEach((a) => a.classList.toggle("active", a.dataset.sec === id));
       const active = railLinks.find((a) => a.dataset.sec === id);
       if (active && matchMedia("(max-width: 960px)").matches) {
-        active.scrollIntoView({ block: "nearest", inline: "center", behavior: reduceMotion ? "auto" : "smooth" });
+        // Scroll only the chip bar sideways. scrollIntoView() would also scroll the
+        // window, and Safari scrolls it back to the sticky bar's original spot (the top).
+        const bar = active.closest(".dissect");
+        const a = active.getBoundingClientRect(), b = bar.getBoundingClientRect();
+        const left = bar.scrollLeft + (a.left - b.left) - (bar.clientWidth - a.width) / 2;
+        bar.scrollTo({ left: Math.max(0, left), behavior: reduceMotion ? "auto" : "smooth" });
       }
       renderRailHex(id);
     });
