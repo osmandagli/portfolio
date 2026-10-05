@@ -254,7 +254,7 @@ Type <span class="acc">help</span> to see what's here. <span class="dim">tab com
     "thesis.txt": () => text("#thesis .thesis-title") + "\n\n" + text("#thesis .thesis-abstract"),
     "now.txt": () => $$(".ps-row:not(.head)").map((r) => "• " + r.children[2].innerText).join("\n"),
     "cv.pdf": () => `<a href="OsmanBugraDagli_CV.pdf" download>click to download cv.pdf</a> <span class="dim">(binary file, not dumping it on your terminal)</span>`,
-    "contact.txt": () => `email   <a href="mailto:osman.dagli687@gmail.com">osman.dagli687@gmail.com</a>\ngithub  <a href="https://github.com/osmandagli" target="_blank" rel="noopener">github.com/osmandagli</a>`,
+    "contact.txt": () => `email   <a href="mailto:osman.dagli687@gmail.com">osman.dagli687@gmail.com</a>\ngithub  <a href="https://github.com/osmandagli" target="_blank" rel="noopener">github.com/osmandagli</a>\nlinkedin <a href="https://www.linkedin.com/in/osman-bugra-dagli-8273551a5/" target="_blank" rel="noopener">linkedin.com/in/osman-bugra-dagli</a>`,
     ".secrets": () => `<span class="err">cat: .secrets: Permission denied</span>\n<span class="dim">(good instinct though)</span>`,
   };
   const PROJECTS = () => projects.map((p) => ({
