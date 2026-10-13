@@ -29,7 +29,8 @@
   "sameAs": ["https://github.com/osmandagli", "https://www.linkedin.com/in/osman-bugra-dagli-8273551a5/"]
 }
 </script>
-<meta name="theme-color" content="#0B0E12">
+<meta name="theme-color" content="#0B0E12" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F6F5F1" media="(prefers-color-scheme: light)">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230B0E12'/%3E%3Ctext x='5' y='22' font-family='monospace' font-size='16' font-weight='700' fill='%23FFB547'%3E%3E_%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,6 +42,7 @@
 </script>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 
 <!-- ============================================================
      Anything with class="todo" is a placeholder: replace the text
@@ -48,7 +50,7 @@
      ============================================================ -->
 
 <header class="topbar">
-  <a class="prompt" href="#top" aria-label="Back to top">
+  <a class="prompt" translate="no" href="#top" aria-label="Back to top">
     <span class="p-user">osman</span><span class="p-at">@</span><span class="p-host">dagli</span><span class="p-path">:~$</span><span class="cursor" aria-hidden="true"></span>
   </a>
   <div class="topbar-actions">
@@ -67,29 +69,29 @@
   <aside class="rail" aria-label="Sections">
     <p class="rail-title">Packet details</p>
     <ol class="dissect">
-      <li><a href="#top" data-sec="top"><span class="tw">▸</span> Frame 1: 1 visitor on wire</a></li>
-      <li><a href="#whoami" data-sec="whoami"><span class="tw">▸</span> <b>L1</b> Physical <i>whoami</i></a></li>
-      <li><a href="#toolbox" data-sec="toolbox"><span class="tw">▸</span> <b>L2</b> Data link <i>lsmod</i></a></li>
-      <li><a href="#route" data-sec="route"><span class="tw">▸</span> <b>L3</b> Network <i>traceroute</i></a></li>
-      <li><a href="#thesis" data-sec="thesis"><span class="tw">▸</span> <b>L4</b> Transport <i>thesis</i></a></li>
-      <li><a href="#projects" data-sec="projects"><span class="tw">▸</span> <b>L5</b> Session <i>projects</i></a></li>
-      <li><a href="#encodings" data-sec="encodings"><span class="tw">▸</span> <b>L6</b> Presentation <i>iconv</i></a></li>
-      <li><a href="#now" data-sec="now"><span class="tw">▸</span> <b>L7</b> Application <i>now</i></a></li>
-      <li><a href="#connect" data-sec="connect"><span class="tw">▸</span> <b>SYN</b> Open a connection</a></li>
+      <li><a href="#top" data-sec="top"><span class="tw" aria-hidden="true">▸</span> Frame 1: 1 visitor on wire</a></li>
+      <li><a href="#whoami" data-sec="whoami"><span class="tw" aria-hidden="true">▸</span> <b>L1</b> Physical <i>whoami</i></a></li>
+      <li><a href="#toolbox" data-sec="toolbox"><span class="tw" aria-hidden="true">▸</span> <b>L2</b> Data link <i>lsmod</i></a></li>
+      <li><a href="#route" data-sec="route"><span class="tw" aria-hidden="true">▸</span> <b>L3</b> Network <i>traceroute</i></a></li>
+      <li><a href="#thesis" data-sec="thesis"><span class="tw" aria-hidden="true">▸</span> <b>L4</b> Transport <i>thesis</i></a></li>
+      <li><a href="#projects" data-sec="projects"><span class="tw" aria-hidden="true">▸</span> <b>L5</b> Session <i>projects</i></a></li>
+      <li><a href="#encodings" data-sec="encodings"><span class="tw" aria-hidden="true">▸</span> <b>L6</b> Presentation <i>iconv</i></a></li>
+      <li><a href="#now" data-sec="now"><span class="tw" aria-hidden="true">▸</span> <b>L7</b> Application <i>now</i></a></li>
+      <li><a href="#connect" data-sec="connect"><span class="tw" aria-hidden="true">▸</span> <b>SYN</b> Open a connection</a></li>
     </ol>
     <div class="rail-hex" aria-hidden="true" id="rail-hex"></div>
     <p class="rail-hint">Press <span class="kbd">/</span> for a shell. Try <code>help</code>.</p>
   </aside>
 
-  <main>
+  <main id="main" tabindex="-1">
 
     <!-- ===================== HERO ===================== -->
     <section class="hero" data-section="top">
-      <p class="kicker"><span class="dot live"></span> Frame 1 · captured just now · <span id="uptime">uptime 0s</span></p>
+      <p class="kicker"><span class="dot live" aria-hidden="true"></span> Frame 1 · captured just now · <span id="uptime">uptime 0s</span></p>
       <h1>Osman Bugra Dagli</h1>
       <p class="lede">DevOps engineer who likes the layers <em>underneath</em>.</p>
       <p class="hero-copy">
-        I'm a DevOps engineer in Milan. I keep infrastructure running, and I like finding out how it works
+        I’m a DevOps engineer in Milan. I keep infrastructure running, and I like finding out how it works
         underneath: Linux, networking, and the kernel.
       </p>
       <div class="hero-cta">
@@ -97,7 +99,7 @@
         <button class="btn btn-outline" type="button" data-open-shell>Open a shell <span class="kbd">/</span></button>
       </div>
 
-      <figure class="capture" aria-label="Simulated packet capture of you visiting this site">
+      <figure class="capture" translate="no" aria-label="Simulated packet capture of you visiting this site">
         <figcaption>
           <span class="cap-dots" aria-hidden="true"><i></i><i></i><i></i></span>
           <span>tcpdump -i eth0 -nn 'host osman'</span>
@@ -114,15 +116,15 @@
       <div class="split">
         <div class="prose">
           <p>
-            I'm a DevOps engineer and a <abbr title="Certified Kubernetes Administrator">CKA</abbr>. At Turkish Aerospace (TUSAS)
+            I’m a DevOps engineer and a <abbr title="Certified Kubernetes Administrator">CKA</abbr>. At Turkish Aerospace (TUSAS)
             I built and ran containerized infrastructure on Kubernetes, led the move of application servers like Tomcat off
             traditional VMs, and tuned the GitLab CI/CD that shipped it all. Before that, at ASELSAN, I got legacy software
-            that <em>couldn't</em> be containerized running on Kubernetes anyway, with KubeVirt.
+            that <em>couldn’t</em> be containerized running on Kubernetes anyway, with KubeVirt.
           </p>
           <p>
             I think the best ops people understand the layer below the one they operate, so I went there on purpose.
             I wrote a container runtime from raw namespaces and cgroups and a connection tracker in eBPF/XDP. I also
-            hardened an embedded RTOS kernel against radiation-induced bit flips with LLVM. Now I'm finishing a master's thesis on kernel-bypass networking at Politecnico di Milano.
+            hardened an embedded RTOS kernel against radiation-induced bit flips with LLVM. Now I’m finishing a master’s thesis on kernel-bypass networking at Politecnico di Milano.
           </p>
           <p>
             Off the terminal I play table tennis for AON Milano Sport in the Italian league.
@@ -135,7 +137,7 @@
           <div><dt>lang</dt><dd>Go · Python · Bash</dd></div>
           <div><dt>likes</dt><dd>XDP, AF_XDP, eBPF, QUIC</dd></div>
           <div><dt>based</dt><dd>Milano, IT · open to relocate</dd></div>
-          <div><dt>status</dt><dd><span class="dot live"></span> open to work</dd></div>
+          <div><dt>status</dt><dd><span class="dot live" aria-hidden="true"></span> open to work</dd></div>
           <div><dt>seeking</dt><dd>DevOps · platform · SRE</dd></div>
           <div><dt>also</dt><dd>network software</dd></div>
         </dl>
@@ -148,29 +150,29 @@
       <h2>lsmod</h2>
       <p class="section-sub">Modules loaded into this engineer. Click one to see where it was used, at work or in projects.</p>
 
-      <div class="lsmod" role="table" aria-label="Skills">
-        <div class="lsmod-row head" role="row">
-          <span role="columnheader">Module</span><span role="columnheader">Area</span><span role="columnheader">Used by</span>
+      <div class="lsmod" translate="no" role="group" aria-label="Skills. Select one to filter the career, thesis and projects">
+        <div class="lsmod-row head" aria-hidden="true">
+          <span>Module</span><span>Area</span><span>Used by</span>
         </div>
         <!-- data-skill must match tokens in data-skills on .proj and .hop -->
-        <button class="lsmod-row" data-skill="kubernetes" role="row"><span>kubernetes <small class="badge">CKA</small></span><span>orchestration</span><span>tusas, aselsan</span></button>
-        <button class="lsmod-row" data-skill="helm" role="row"><span>helm</span><span>packaging</span><span>tusas</span></button>
-        <button class="lsmod-row" data-skill="cicd" role="row"><span>gitlab_ci</span><span>delivery</span><span>tusas</span></button>
-        <button class="lsmod-row" data-skill="kubevirt" role="row"><span>kubevirt</span><span>virtualization</span><span>aselsan</span></button>
-        <button class="lsmod-row" data-skill="go" role="row"><span>go</span><span>language</span><span>containerrt, cloud_storage</span></button>
-        <button class="lsmod-row" data-skill="python" role="row"><span>python</span><span>language</span><span>tusas, cd2alloy, thesis</span></button>
-        <button class="lsmod-row" data-skill="c" role="row"><span>c · c++</span><span>language</span><span>miosix_aspis, conntracker, thesis</span></button>
-        <button class="lsmod-row" data-skill="llvm" role="row"><span>llvm · clang</span><span>compilers</span><span>miosix_aspis</span></button>
-        <button class="lsmod-row" data-skill="embedded" role="row"><span>stm32 · miosix</span><span>embedded</span><span>miosix_aspis</span></button>
-        <button class="lsmod-row" data-skill="formal" role="row"><span>alloy</span><span>formal methods</span><span>cd2alloy</span></button>
-        <button class="lsmod-row" data-skill="linux" role="row"><span>linux</span><span>systems</span><span>almost everything</span></button>
-        <button class="lsmod-row" data-skill="containers" role="row"><span>namespaces · cgroups</span><span>kernel</span><span>containerrt, tusas</span></button>
-        <button class="lsmod-row" data-skill="xdp" role="row"><span>ebpf · xdp</span><span>kernel</span><span>conntracker, thesis</span></button>
-        <button class="lsmod-row" data-skill="afxdp" role="row"><span>af_xdp</span><span>kernel bypass</span><span>thesis</span></button>
-        <button class="lsmod-row" data-skill="quic" role="row"><span>quic · http3</span><span>networking</span><span>thesis, cloud_storage</span></button>
-        <button class="lsmod-row" data-skill="networking" role="row"><span>tcp_ip</span><span>networking</span><span>conntracker, thesis, cloud_storage</span></button>
-        <button class="lsmod-row" data-skill="perf" role="row"><span>perf</span><span>profiling</span><span>thesis</span></button>
-        <button class="lsmod-row" data-skill="bash" role="row"><span>bash</span><span>glue</span><span>everything</span></button>
+        <button class="lsmod-row" data-skill="kubernetes" type="button"><span>kubernetes <small class="badge">CKA</small></span><span>orchestration</span><span>tusas, aselsan</span></button>
+        <button class="lsmod-row" data-skill="helm" type="button"><span>helm</span><span>packaging</span><span>tusas</span></button>
+        <button class="lsmod-row" data-skill="cicd" type="button"><span>gitlab_ci</span><span>delivery</span><span>tusas</span></button>
+        <button class="lsmod-row" data-skill="kubevirt" type="button"><span>kubevirt</span><span>virtualization</span><span>aselsan</span></button>
+        <button class="lsmod-row" data-skill="go" type="button"><span>go</span><span>language</span><span>containerrt, cloud_storage</span></button>
+        <button class="lsmod-row" data-skill="python" type="button"><span>python</span><span>language</span><span>tusas, cd2alloy, thesis</span></button>
+        <button class="lsmod-row" data-skill="c" type="button"><span>c · c++</span><span>language</span><span>miosix_aspis, conntracker, thesis</span></button>
+        <button class="lsmod-row" data-skill="llvm" type="button"><span>llvm · clang</span><span>compilers</span><span>miosix_aspis</span></button>
+        <button class="lsmod-row" data-skill="embedded" type="button"><span>stm32 · miosix</span><span>embedded</span><span>miosix_aspis</span></button>
+        <button class="lsmod-row" data-skill="formal" type="button"><span>alloy</span><span>formal methods</span><span>cd2alloy</span></button>
+        <button class="lsmod-row" data-skill="linux" type="button"><span>linux</span><span>systems</span><span>almost everything</span></button>
+        <button class="lsmod-row" data-skill="containers" type="button"><span>namespaces · cgroups</span><span>kernel</span><span>containerrt, tusas</span></button>
+        <button class="lsmod-row" data-skill="xdp" type="button"><span>ebpf · xdp</span><span>kernel</span><span>conntracker, thesis</span></button>
+        <button class="lsmod-row" data-skill="afxdp" type="button"><span>af_xdp</span><span>kernel bypass</span><span>thesis</span></button>
+        <button class="lsmod-row" data-skill="quic" type="button"><span>quic · http3</span><span>networking</span><span>thesis, cloud_storage</span></button>
+        <button class="lsmod-row" data-skill="networking" type="button"><span>tcp_ip</span><span>networking</span><span>conntracker, thesis, cloud_storage</span></button>
+        <button class="lsmod-row" data-skill="perf" type="button"><span>perf</span><span>profiling</span><span>thesis</span></button>
+        <button class="lsmod-row" data-skill="bash" type="button"><span>bash</span><span>glue</span><span>everything</span></button>
       </div>
     </section>
 
@@ -202,7 +204,7 @@
               <span class="hop-rtt">Aug – Sep 2022</span>
             </summary>
             <ul class="hop-body">
-              <li>Ran legacy software that couldn't be containerized on Kubernetes using <b>KubeVirt</b>, so VMs and containers shared one control plane</li>
+              <li>Ran legacy software that couldn’t be containerized on Kubernetes using <b>KubeVirt</b>, so VMs and containers shared one control plane</li>
             </ul>
           </details>
         </li>
@@ -246,7 +248,7 @@
 
     <!-- ===================== L4 THESIS ===================== -->
     <section id="thesis" data-section="thesis" class="thesis" data-skills="afxdp xdp quic perf networking linux python c">
-      <p class="kicker"><span class="layer">L4</span> Transport · my master's thesis</p>
+      <p class="kicker"><span class="layer">L4</span> Transport · my master’s thesis</p>
       <h2>Thesis</h2>
 
       <div class="thesis-head">
@@ -257,14 +259,14 @@
       <div class="thesis-abstract">
         <p>
           Media over QUIC (MoQ) is an emerging IETF protocol for live media delivery, and relays sit at its core.
-          Every packet they forward passes through the kernel's network stack. This thesis measures how much that
-          costs in Meta's <strong>moxygen</strong> relay and removes it.
+          Every packet they forward passes through the kernel’s network stack. This thesis measures how much that
+          costs in Meta’s <strong>moxygen</strong> relay and removes it.
         </p>
         <p>
-          A <code>perf</code>-based CPU-time breakdown shows that kernel packet I/O takes a significant share of each core's
+          A <code>perf</code>-based CPU-time breakdown shows that kernel packet I/O takes a significant share of each core’s
           time. I built an <strong>AF_XDP zero-copy</strong> fast path and connected it to the QUIC stack through a
-          non-invasive socket-injection seam, so the relay's entire UDP RX/TX path runs over AF_XDP
-          <strong>with zero changes to the relay's source</strong>.
+          non-invasive socket-injection seam, so the relay’s entire UDP RX/TX path runs over AF_XDP
+          <strong>with zero changes to the relay’s source</strong>.
         </p>
       </div>
 
@@ -286,7 +288,7 @@
           <div class="paths">
             <div>
               <p class="path-title muted">before: every packet through the kernel</p>
-              <ol class="flow">
+              <ol class="flow" translate="no">
                 <li><span>NIC</span></li>
                 <li><span>driver · sk_buff</span></li>
                 <li><span>UDP stack</span></li>
@@ -297,7 +299,7 @@
             </div>
             <div>
               <p class="path-title">after: kernel bypass</p>
-              <ol class="flow hot">
+              <ol class="flow hot" translate="no">
                 <li><span>NIC</span></li>
                 <li><span>XDP redirect</span></li>
                 <li><span>UMEM (zero-copy)</span></li>
@@ -312,9 +314,9 @@
 
       <h4 class="thesis-sub">Contributions</h4>
       <ul class="bullets thesis-list">
-        <li>A <code>perf</code>-based pipeline that breaks down per-core CPU time along the relay's data path</li>
-        <li>An AF_XDP zero-copy RX/TX path reaching <b>~1.55 Mpps on one core</b>, against ~0.65 Mpps for a <em>tuned</em> kernel baseline (recvmmsg + GRO)</li>
-        <li>A socket-injection seam, built on proxygen's socket factory, that moves the relay onto AF_XDP without the relay knowing</li>
+        <li>A <code>perf</code>-based pipeline that breaks down per-core CPU time along the relay’s data path</li>
+        <li>An AF_XDP zero-copy RX/TX path reaching <b>~1.55&nbsp;Mpps on one core</b>, against ~0.65&nbsp;Mpps for a <em>tuned</em> kernel baseline (recvmmsg + GRO)</li>
+        <li>A socket-injection seam, built on proxygen’s socket factory, that moves the relay onto AF_XDP without the relay knowing</li>
         <li>A reproducible <b>CloudLab testbed</b>: one profile provisions the machines, applies the patch series to moxygen and proxygen, syncs clocks with PTP for one-way latency, and runs the fan-out, throughput and flame-graph experiments</li>
       </ul>
 
@@ -340,8 +342,8 @@
             <span class="tag">LLVM · STM32 · 2026</span>
           </header>
           <p>
-            In orbit, a charged particle can flip a bit in a register or in RAM. That's a <strong>single-event upset</strong>,
-            and the code keeps running on a wrong value. <strong>ASPIS</strong> is an LLVM plugin from Politecnico di Milano's HEAPLab
+            In orbit, a charged particle can flip a bit in a register or in RAM. That’s a <strong>single-event upset</strong>,
+            and the code keeps running on a wrong value. <strong>ASPIS</strong> is an LLVM plugin from Politecnico di Milano’s HEAPLab
             that hardens code against this at the IR level. I integrated it into the build of <strong>Miosix</strong>, an embedded
             RTOS, so the kernel itself compiles hardened for an STM32F407.
           </p>
@@ -362,7 +364,7 @@
             <button type="button" class="btn-ghost" id="seu-reset" hidden>Reset</button>
           </div>
 
-          <ol class="flow">
+          <ol class="flow" translate="no">
             <li><span>C / C++</span></li>
             <li><span>clang</span><small>emits LLVM IR</small></li>
             <li><span>llvm-link</span></li>
@@ -394,7 +396,7 @@
             A minimal container runtime written from scratch on raw Linux primitives, with no runc and no libcontainer.
             I wanted to know exactly what <code>docker run</code> does before the process starts.
           </p>
-          <ol class="flow">
+          <ol class="flow" translate="no">
             <li><span>clone()</span><small>NEWUTS · NEWPID · NEWNS</small></li>
             <li><span>pivot_root</span><small>host root fully unmounted</small></li>
             <li><span>tmpfs /dev</span><small>essential device nodes</small></li>
@@ -406,8 +408,8 @@
             <li>Isolation with <b>UTS, PID and mount namespaces</b></li>
             <li><code>pivot_root</code> instead of <code>chroot</code>: the host root is unmounted, not just hidden</li>
             <li>An ephemeral <code>/dev</code> tmpfs with only the essential device nodes</li>
-            <li>A <b>pipe-based sync barrier</b> between parent and child ensures the workload starts inside its cgroup v2 limits and can't race the setup</li>
-            <li>A real init: reaps zombies, forwards <code>SIGINT</code>/<code>SIGTERM</code>, and exits with the workload's code (128 + signal)</li>
+            <li>A <b>pipe-based sync barrier</b> between parent and child ensures the workload starts inside its cgroup v2 limits and can’t race the setup</li>
+            <li>A real init: reaps zombies, forwards <code>SIGINT</code>/<code>SIGTERM</code>, and exits with the workload’s code (128 + signal)</li>
             <li>Tested with escape attempts, <code>pids.current</code> monitoring and OOM kills under <code>memory.max</code></li>
           </ul>
           <footer>
@@ -490,21 +492,21 @@
     <section id="encodings" data-section="encodings">
       <p class="kicker"><span class="layer">L6</span> Presentation · same data, different encodings</p>
       <h2>iconv</h2>
-      <p class="section-sub">The presentation layer translates between formats. Here's me in a few of them.</p>
+      <p class="section-sub">The presentation layer translates between formats. Here’s me in a few of them.</p>
 
       <div class="enc">
         <div class="enc-block">
-          <p class="enc-cmd">$ iconv -f osman -t <span class="muted">&lt;locale&gt;</span></p>
+          <p class="enc-cmd" translate="no">$ iconv -f osman -t <span class="muted">&lt;locale&gt;</span></p>
           <div class="enc-rows" role="table" aria-label="Spoken languages">
-            <div class="enc-row" role="row"><span>tr_TR.UTF-8</span><span>Türkçe</span><span class="ok">native</span></div>
-            <div class="enc-row" role="row"><span>en_US.UTF-8</span><span>English</span><span class="ok">professional</span></div>
-            <div class="enc-row" role="row"><span>it_IT.UTF-8</span><span>Italiano</span><span class="warn">B1, improving daily</span></div>
+            <div class="enc-row" role="row"><span role="cell">tr_TR.UTF-8</span><span role="cell" lang="tr">Türkçe</span><span role="cell" class="ok">native</span></div>
+            <div class="enc-row" role="row"><span role="cell">en_US.UTF-8</span><span role="cell">English</span><span role="cell" class="ok">professional</span></div>
+            <div class="enc-row" role="row"><span role="cell">it_IT.UTF-8</span><span role="cell" lang="it">Italiano</span><span role="cell" class="warn">B1, improving daily</span></div>
           </div>
         </div>
 
         <div class="enc-block">
-          <p class="enc-cmd">$ openssl x509 -in osman.crt -noout -text</p>
-          <pre class="x509"><span class="k">Subject:</span> CN = Osman Bugra Dagli
+          <p class="enc-cmd" translate="no">$ openssl x509 -in osman.crt -noout -text</p>
+          <pre class="x509" translate="no"><span class="k">Subject:</span> CN = Osman Bugra Dagli
 <span class="k">Issuer:</span>  O = The Linux Foundation, OU = CNCF
 <span class="k">X509v3 Extended Key Usage:</span>
     <b>Certified Kubernetes Administrator (CKA)</b>
@@ -512,7 +514,7 @@
         </div>
 
         <div class="enc-block enc-wide">
-          <p class="enc-cmd">$ iconv -f osman -t application/pdf &gt; cv.pdf</p>
+          <p class="enc-cmd" translate="no">$ iconv -f osman -t application/pdf &gt; cv.pdf</p>
           <div class="enc-cv">
             <p>The same story on one page, for people who prefer paper.</p>
             <a class="btn" href="OsmanBugraDagli_CV.pdf" download>Download CV (PDF)</a>
@@ -523,14 +525,14 @@
 
     <!-- ===================== L7 NOW ===================== -->
     <section id="now" data-section="now">
-      <p class="kicker"><span class="layer">L7</span> Application · what's running right now</p>
+      <p class="kicker"><span class="layer">L7</span> Application · what’s running right now</p>
       <h2>ps aux | grep now</h2>
       <div class="ps" role="table" aria-label="Current activities">
-        <div class="ps-row head" role="row"><span>PID</span><span>STAT</span><span>COMMAND</span></div>
-        <div class="ps-row" role="row"><span>1550</span><span class="ok">R</span><span>writing up the <b>AF_XDP thesis</b>, graduating Dec 2026</span></div>
-        <div class="ps-row" role="row"><span>4433</span><span class="ok">R</span><span>hardening <b>cloud-storage</b>: streaming uploads, quotas, tests</span></div>
-        <div class="ps-row" role="row"><span>8080</span><span class="ok">R</span><span>looking for <b>DevOps, platform or SRE</b> roles, and network software roles close to my thesis. Milano or relocation.</span></div>
-        <div class="ps-row" role="row"><span>1100</span><span class="warn">S</span><span>practicing with <b>AON Milano Sport</b> for the next table tennis league match</span></div>
+        <div class="ps-row head" role="row"><span role="columnheader">PID</span><span role="columnheader">STAT</span><span role="columnheader">COMMAND</span></div>
+        <div class="ps-row" role="row"><span role="cell">1550</span><span role="cell" class="ok">R</span><span role="cell">writing up the <b>AF_XDP thesis</b>, graduating Dec 2026</span></div>
+        <div class="ps-row" role="row"><span role="cell">4433</span><span role="cell" class="ok">R</span><span role="cell">hardening <b>cloud-storage</b>: streaming uploads, quotas, tests</span></div>
+        <div class="ps-row" role="row"><span role="cell">8080</span><span role="cell" class="ok">R</span><span role="cell">looking for <b>DevOps, platform or SRE</b> roles, and network software roles close to my thesis. Milano or relocation.</span></div>
+        <div class="ps-row" role="row"><span role="cell">1100</span><span role="cell" class="warn">S</span><span role="cell">practicing with <b>AON Milano Sport</b> for the next table tennis league match</span></div>
       </div>
     </section>
 
@@ -555,12 +557,12 @@
 </div>
 
 <footer class="site-foot">
-  <span>© <span id="year">2026</span> Osman Bugra Dagli (Osman Buğra Dağlı) · Milano</span>
+  <span>© <span id="year">2026</span> Osman Bugra Dagli (<span lang="tr">Osman Buğra Dağlı</span>) · Milano</span>
   <span class="muted">Hand-written HTML/CSS/JS · no framework · no trackers · 0 cookies</span>
 </footer>
 
 <!-- ===================== SHELL ===================== -->
-<dialog class="shell" id="shell" aria-label="Interactive shell">
+<dialog class="shell" translate="no" id="shell" aria-label="Interactive shell">
   <div class="shell-bar">
     <span class="cap-dots" aria-hidden="true"><i></i><i></i><i></i></span>
     <span>visitor@osman: ~</span>
@@ -569,7 +571,7 @@
   <div class="shell-out" id="shell-out" aria-live="polite"></div>
   <form class="shell-in" id="shell-form" autocomplete="off">
     <label for="shell-input" class="shell-ps1">visitor@osman:~$</label>
-    <input id="shell-input" type="text" spellcheck="false" autocapitalize="off" autocorrect="off">
+    <input id="shell-input" name="cmd" type="text" autocomplete="off" enterkeyhint="go" spellcheck="false" autocapitalize="off" autocorrect="off">
   </form>
 </dialog>
 

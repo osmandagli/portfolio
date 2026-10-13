@@ -13,12 +13,18 @@
   function currentTheme() {
     return root.dataset.theme || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
   }
+  function syncThemeColor() {
+    const bg = getComputedStyle(root).getPropertyValue("--bg").trim();
+    $$('meta[name="theme-color"]').forEach((m) => { m.content = bg; m.removeAttribute("media"); });
+  }
   function setTheme(next) {
     next = next || (currentTheme() === "dark" ? "light" : "dark");
     root.dataset.theme = next;
     try { localStorage.setItem("theme", next); } catch (e) {}
+    syncThemeColor();
     return next;
   }
+  if (root.dataset.theme) syncThemeColor();
 
   /* ---------------- uptime + year ---------------- */
   $("#year").textContent = new Date().getFullYear();
@@ -51,11 +57,7 @@
   const capCount = $("#cap-count");
   let pi = 0, pktTime = 0;
   function pushPacket() {
-    if (pi >= packets.length) {
-      // pause, then restart the "session"
-      setTimeout(() => { cap.innerHTML = ""; pi = 0; pktTime = 0; pushPacket(); }, 5000);
-      return;
-    }
+    if (pi >= packets.length) return; // one session, then hold still
     const [proto, info] = packets[pi++];
     pktTime += 0.004 + Math.random() * 0.03;
     const row = document.createElement("div");
@@ -64,7 +66,7 @@
     cap.appendChild(row);
     while (cap.children.length > 11) cap.firstChild.remove();
     capCount.textContent = `${pi} packets`;
-    setTimeout(pushPacket, 350 + Math.random() * 550);
+    setTimeout(pushPacket, 180 + Math.random() * 220);
   }
   if (reduceMotion) {
     packets.slice(-11).forEach(([proto, info], i) => {
@@ -133,17 +135,26 @@
   const seuA = $("#seu-a"), seuB = $("#seu-b"), seuStatus = $("#seu-status"), seuReset = $("#seu-reset");
   let seuReg = SEU_VALUE;
   const seuOk = seuStatus ? seuStatus.innerHTML : "";
+  const seuBits = [], seuShadow = [];
+  if (seuA) {
+    for (let i = 7; i >= 0; i--) {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "bit";
+      b.addEventListener("click", () => flipBit(i));
+      seuA.appendChild(b); seuBits[i] = b;
+      const sh = document.createElement("span");
+      sh.className = "bit"; sh.textContent = (SEU_VALUE >> i) & 1;
+      seuB.appendChild(sh); seuShadow[i] = sh;
+    }
+  }
   function renderSeu() {
     if (!seuA) return;
-    seuA.innerHTML = ""; seuB.innerHTML = "";
     for (let i = 7; i >= 0; i--) {
-      const v = (seuReg >> i) & 1, orig = (SEU_VALUE >> i) & 1;
-      const b = document.createElement("button");
-      b.type = "button"; b.className = "bit" + (v !== orig ? " hit" : ""); b.textContent = v;
-      b.setAttribute("aria-label", `bit ${i}, value ${v}. Flip it`);
-      b.addEventListener("click", () => flipBit(i));
-      seuA.appendChild(b);
-      seuB.insertAdjacentHTML("beforeend", `<span class="bit${v !== orig ? " diff" : ""}">${orig}</span>`);
+      const v = (seuReg >> i) & 1, orig = (SEU_VALUE >> i) & 1, b = seuBits[i];
+      b.textContent = v;
+      b.setAttribute("aria-label", `Bit ${i}, value ${v}. Flip it`);
+      b.classList.toggle("hit", v !== orig);
+      seuShadow[i].classList.toggle("diff", v !== orig);
     }
     $("#seu-a-hex").textContent = "0x" + seuReg.toString(16).toUpperCase().padStart(2, "0");
     const bad = seuReg !== SEU_VALUE;
@@ -158,7 +169,7 @@
     renderSeu();
   }
   if (seuA) {
-    seuReset.addEventListener("click", () => { seuReg = SEU_VALUE; renderSeu(); });
+    seuReset.addEventListener("click", () => { seuReg = SEU_VALUE; renderSeu(); seuBits[7].focus(); });
     renderSeu();
   }
 
@@ -174,8 +185,10 @@
     if (!skill) {
       filterable.forEach((p) => p.classList.remove("dim", "match"));
       status.innerHTML = statusDefault;
+      syncSkillUrl();
       return 0;
     }
+    syncSkillUrl();
     let n = 0, jobs = 0, thesis = false;
     filterable.forEach((p) => {
       const hit = p.dataset.skills.split(/\s+/).includes(skill);
@@ -188,18 +201,36 @@
       p.classList.toggle("match", hit);
     });
     status.innerHTML = `<span class="mono">modinfo ${esc(skill)}</span>: ${thesis ? "the thesis, " : ""}${n} project${n === 1 ? "" : "s"}, ${jobs} hop${jobs === 1 ? "" : "s"} in the traceroute. <button type="button" id="clear-filter">rmmod ✕</button>`;
-    $("#clear-filter").addEventListener("click", () => applyFilter(null));
+    $("#clear-filter").addEventListener("click", () => {
+      const row = $(`.lsmod-row[data-skill="${CSS.escape(skill)}"]`);
+      applyFilter(null);
+      row?.focus({ preventScroll: true });
+    });
     return n + jobs + (thesis ? 1 : 0);
   }
+  function syncSkillUrl() {
+    const url = new URL(location.href);
+    activeSkill ? url.searchParams.set("skill", activeSkill) : url.searchParams.delete("skill");
+    history.replaceState(null, "", url);
+  }
+  const scrollToFirstMatch = () => {
+    const first = activeSkill && $(".hop.match, .thesis.match, .proj.match");
+    if (first) first.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
+  };
   $$(".lsmod-row[data-skill]").forEach((row) => {
     row.setAttribute("aria-pressed", "false");
     row.addEventListener("click", () => {
       const s = row.dataset.skill;
       applyFilter(activeSkill === s ? null : s);
-      const first = activeSkill && $(".hop.match, .thesis.match, .proj.match");
-      if (first) first.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
+      scrollToFirstMatch();
     });
   });
+  // Shareable filter links: osmandagli.com/?skill=afxdp
+  const sharedSkill = new URLSearchParams(location.search).get("skill");
+  if (sharedSkill && $(`.lsmod-row[data-skill="${CSS.escape(sharedSkill)}"]`)) {
+    applyFilter(sharedSkill);
+    addEventListener("load", scrollToFirstMatch, { once: true });
+  }
 
   /* ============================================================
      SHELL
@@ -207,7 +238,7 @@
   const shell = $("#shell");
   const out = $("#shell-out");
   const input = $("#shell-input");
-  const history = [];
+  const cmdHistory = [];
   let hIdx = 0;
   let booted = false;
 
@@ -369,7 +400,7 @@ Type <span class="acc">help</span> to see what's here. <span class="dim">tab com
       const skill = aliases[args[0]] || args[0];
       if (!$(`.lsmod-row[data-skill="${CSS.escape(skill)}"]`)) return `<span class="err">modinfo: ERROR: Module ${esc(args[0])} not found.</span>`;
       const n = applyFilter(skill);
-      setTimeout(() => goTo("#projects"), 700);
+      setTimeout(() => { closeShell(); scrollToFirstMatch(); }, 700);
       return `filename:  /lib/modules/osman/${esc(skill)}.ko\nmatches:   ${n}\n<span class="dim">filtering…</span>`;
     },
     rmmod: () => { applyFilter(null); return "filter cleared"; },
@@ -385,12 +416,12 @@ Type <span class="acc">help</span> to see what's here. <span class="dim">tab com
     ss: () => `State   Recv-Q  Send-Q  Local Address:Port   Process\nLISTEN  0       128     0.0.0.0:22           ("sshd")\nLISTEN  0       128     0.0.0.0:443          ("devops-roles")\nLISTEN  0       64      0.0.0.0:8443         ("network-software-roles")\nUNCONN  0       0       0.0.0.0:4433         ("cloud-storage",quic)\nXDP     0       0       eth0:queue0          ("moq-relay",af_xdp,zc)`,
     uname: (args) => args.includes("-a") ? `Linux osman 6.x #1 SMP PREEMPT_DYNAMIC x86_64 GNU/Linux` : `Linux`,
     theme: (args) => `theme: ${setTheme(args[0] === "light" || args[0] === "dark" ? args[0] : undefined)}`,
-    history: () => history.map((h, i) => `${String(i + 1).padStart(4)}  ${esc(h)}`).join("\n"),
+    history: () => cmdHistory.map((h, i) => `${String(i + 1).padStart(4)}  ${esc(h)}`).join("\n"),
     clear: () => { out.innerHTML = ""; return ""; },
     exit: () => { closeShell(); return ""; },
     pwd: () => "/home/osman",
     echo: (args) => esc(args.join(" ")),
-    date: () => new Date().toString(),
+    date: () => new Intl.DateTimeFormat(navigator.language, { dateStyle: "full", timeStyle: "long" }).format(new Date()),
     sudo: (args) => args.join(" ").includes("rm") ? `<span class="err">nice try.</span> this incident will be reported (to nobody).` : `visitor is not in the sudoers file. <span class="dim">hire osman to get root.</span>`,
     rm: () => `<span class="err">rm: cannot remove: Read-only file system</span>`,
     vim: () => `you are now stuck in vim. <span class="dim">(just kidding, type :q)</span>`,
@@ -434,12 +465,12 @@ Type <span class="acc">help</span> to see what's here. <span class="dim">tab com
     e.preventDefault();
     const v = input.value;
     input.value = "";
-    if (v.trim()) { history.push(v); hIdx = history.length; }
+    if (v.trim()) { cmdHistory.push(v); hIdx = cmdHistory.length; }
     run(v);
   });
   input.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowUp") { e.preventDefault(); if (hIdx > 0) input.value = history[--hIdx]; }
-    else if (e.key === "ArrowDown") { e.preventDefault(); hIdx = Math.min(history.length, hIdx + 1); input.value = history[hIdx] || ""; }
+    if (e.key === "ArrowUp") { e.preventDefault(); if (hIdx > 0) input.value = cmdHistory[--hIdx]; }
+    else if (e.key === "ArrowDown") { e.preventDefault(); hIdx = Math.min(cmdHistory.length, hIdx + 1); input.value = cmdHistory[hIdx] || ""; }
     else if (e.key === "Tab") { e.preventDefault(); input.value = complete(input.value); }
     else if (e.key === "l" && e.ctrlKey) { e.preventDefault(); out.innerHTML = ""; }
   });
