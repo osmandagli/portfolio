@@ -128,9 +128,9 @@
             Prima ancora, in ASELSAN, ho fatto girare su Kubernetes, con KubeVirt, software legacy che <em>non si poteva</em> containerizzare.
           </p>
           <p>
-            Credo che i migliori ops conoscano il livello sotto quello che gestiscono, quindi ci sono andato di proposito.
-            Ho scritto un container runtime partendo da namespace e cgroup nudi e un connection tracker in eBPF/XDP. Ho anche
-            reso un kernel RTOS embedded resistente ai bit flip causati dalle radiazioni, con LLVM. Ora sto concludendo una tesi magistrale sul networking kernel-bypass al Politecnico di Milano.
+            Credo che i migliori ingegneri ops conoscano il livello sotto quello che gestiscono, quindi ci sono andato di proposito.
+            Ho scritto un container runtime partendo da namespace e cgroup nudi, e un connection tracker in eBPF/XDP. Ho anche
+            compilato un kernel RTOS embedded con ASPIS, uno strumento basato su LLVM che protegge il codice dai bit flip causati dalle radiazioni. Ora sto concludendo una tesi magistrale sul networking kernel-bypass al Politecnico di Milano.
           </p>
           <p>
             Lontano dal terminale gioco a tennistavolo con l’AON Milano Sport nel campionato italiano.
@@ -210,7 +210,7 @@
               <span class="hop-rtt">ago – set 2022</span>
             </summary>
             <ul class="hop-body">
-              <li>Ho portato su Kubernetes software legacy non containerizzabile usando <b>KubeVirt</b>, così VM e container condividevano un unico control plane</li>
+              <li>Con <b>KubeVirt</b> ho fatto girare come VM su Kubernetes software legacy non containerizzabile, così VM e container condividevano un unico control plane</li>
             </ul>
           </details>
         </li>
@@ -259,25 +259,30 @@
 
       <div class="thesis-head">
         <h3 class="thesis-title" lang="en">Accelerating a Media-over-QUIC Relay with AF_XDP Kernel-Bypass Networking</h3>
-        <p class="thesis-meta">Osman Bugra Dagli · Politecnico di Milano · gen 2025 – oggi · in corso</p>
+        <p class="thesis-meta">Osman Bugra Dagli · Politecnico di Milano · gen 2025 – oggi</p>
       </div>
 
       <div class="thesis-abstract">
         <p>
           Media over QUIC (MoQ) è un protocollo IETF emergente per la distribuzione di media in diretta, e i relay ne sono il cuore.
           Ogni pacchetto che inoltrano attraversa lo stack di rete del kernel. Questa tesi misura quanto costa
-          nel relay <strong>moxygen</strong> di Meta e lo elimina.
+          nel relay <strong>moxygen</strong> di Meta e toglie il kernel da quel percorso.
         </p>
         <p>
           Un’analisi del tempo CPU basata su <code>perf</code> mostra che l’I/O dei pacchetti nel kernel occupa una quota significativa
           del tempo di ogni core. Ho costruito un fast path <strong>AF_XDP zero-copy</strong> e l’ho collegato allo stack QUIC tramite un
-          punto di iniezione dei socket non invasivo, così l’intero percorso UDP RX/TX del relay passa per AF_XDP
-          <strong>senza modificare il codice sorgente del relay</strong>.
+          punto di iniezione dei socket: il punto in cui il server sceglie quali socket UDP usa QUIC. L’intero percorso
+          UDP RX/TX del relay ora passa per AF_XDP <strong>senza modificare la logica di inoltro del relay</strong>; l’unica
+          modifica al server sono poche righe, attivabili con un flag, che installano la socket factory AF_XDP.
+        </p>
+        <p>
+          Su un singolo core, il percorso AF_XDP riceve circa <strong>2,4 volte più pacchetti al secondo</strong> di una
+          baseline kernel ottimizzata.
         </p>
       </div>
 
           <div class="bench" role="img" aria-label="Throughput RX su singolo core: AF_XDP zero-copy circa 1,55 milioni di pacchetti al secondo contro circa 0,65 milioni del kernel ottimizzato con recvmmsg e GRO">
-            <p class="bench-title">throughput RX su singolo core <span class="muted">(Mpps, più alto è meglio)</span></p>
+            <p class="bench-title">throughput RX su singolo core <span class="muted">(milioni di pacchetti/s, più alto è meglio)</span></p>
             <div class="bench-row">
               <span class="bench-label">kernel · recvmmsg + GRO (ottimizzato)</span>
               <span class="bench-bar"><i style="--w: 41.9%"></i></span>
@@ -322,7 +327,7 @@
       <ul class="bullets thesis-list">
         <li>Una pipeline basata su <code>perf</code> che scompone il tempo CPU per core lungo il data path del relay</li>
         <li>Un percorso RX/TX AF_XDP zero-copy che raggiunge <b>~1,55&nbsp;Mpps su un singolo core</b>, contro ~0,65&nbsp;Mpps di una baseline kernel <em>ottimizzata</em> (recvmmsg + GRO)</li>
-        <li>Un punto di iniezione dei socket, costruito sulla socket factory di proxygen, che sposta il relay su AF_XDP senza che il relay se ne accorga</li>
+        <li>Un punto di iniezione dei socket, costruito sulla socket factory di proxygen, che sposta il relay su AF_XDP lasciando invariata la sua logica di inoltro</li>
         <li>Un <b>testbed CloudLab</b> riproducibile: un solo profilo prepara le macchine, applica le patch a moxygen e proxygen, sincronizza gli orologi con PTP per la latenza one-way ed esegue gli esperimenti di fan-out, throughput e flame graph</li>
       </ul>
 
@@ -350,12 +355,12 @@
           <p>
             In orbita, una particella carica può invertire un bit in un registro o in RAM. È un <strong>single-event upset</strong>,
             e il codice continua a girare con un valore sbagliato. <strong>ASPIS</strong> è un plugin LLVM dell’HEAPLab del Politecnico di Milano
-            che protegge il codice da questo problema a livello di IR. L’ho integrato nella build di <strong>Miosix</strong>, un RTOS
+            che protegge il codice da questo problema a livello della rappresentazione intermedia (IR) di LLVM. L’ho integrato nella build di <strong>Miosix</strong>, un RTOS
             embedded, così il kernel stesso viene compilato in versione protetta per un STM32F407.
           </p>
 
           <div class="seu" id="seu">
-            <p class="seu-title">Prova: clicca un bit qualsiasi di <code>x</code> per colpirlo con un raggio cosmico. EDDI tiene una copia ombra di ogni valore e confronta le due prima di usarlo.</p>
+            <p class="seu-title">Prova: clicca un bit qualsiasi di <code>x</code> per colpirlo con un raggio cosmico. EDDI (error detection by duplicated instructions) tiene una copia ombra di ogni valore e confronta le due prima di usarlo.</p>
             <div class="seu-reg">
               <span class="seu-name">x</span>
               <span class="bits" id="seu-a" role="group" aria-label="Registro x, clicca un bit per invertirlo"></span>
@@ -477,7 +482,7 @@
             <span class="tag">Go · HTTP/3</span>
           </header>
           <p>
-            Un file server self-hosted su <strong>HTTP/3 / QUIC</strong>. TCP+TLS e QUIC/UDP condividono la stessa porta.
+            Un file server self-hosted su <strong>HTTP/3 (QUIC)</strong>. TCP+TLS e QUIC/UDP condividono la stessa porta.
             I browser arrivano via TCP, vedono <code>Alt-Svc</code> e passano a HTTP/3 da soli.
           </p>
           <ul class="bullets">

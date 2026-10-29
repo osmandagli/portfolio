@@ -401,7 +401,7 @@ Scrivi <span class="acc">help</span> per vedere cosa c'è. <span class="dim">tab
       return "";
     },
     projects: () => PROJECTS().map((p) => `<span class="cy">${esc(p.id.padEnd(16))}</span>${esc(p.desc.split(/(?<=\.)\s/)[0])}`).join("\n") + `\n\n<span class="dim">${L("open &lt;name&gt; to jump there", "open &lt;nome&gt; per andarci")}</span>`,
-    whoami: () => L(`osman bugra dagli: DevOps engineer (CKA), MSc @ Politecnico di Milano.\nran kubernetes in production at Turkish Aerospace, now bypasses the kernel for fun and a thesis.`,
+    whoami: () => L(`osman bugra dagli: DevOps engineer (CKA), MEng @ Politecnico di Milano.\nran kubernetes in production at Turkish Aerospace, now bypasses the kernel for fun and a thesis.`,
       `osman bugra dagli: DevOps engineer (CKA), laurea magistrale @ Politecnico di Milano.\nha gestito kubernetes in produzione in Turkish Aerospace, ora bypassa il kernel per passione e per la tesi.`),
     bench: () => {
       const bar = (v) => "█".repeat(Math.round(v / 1.55 * 30)).padEnd(30, "░");

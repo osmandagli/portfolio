@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Osman Bugra Dagli — DevOps & Systems</title>
-<meta name="description" content="Osman Bugra Dagli — DevOps engineer (CKA) and MSc student at Politecnico di Milano working below the abstraction: Kubernetes, AF_XDP, eBPF/XDP, QUIC, Linux internals, Go.">
+<meta name="description" content="Osman Bugra Dagli — DevOps engineer (CKA) and MEng student at Politecnico di Milano working below the abstraction: Kubernetes, AF_XDP, eBPF/XDP, QUIC, Linux internals, Go.">
 <meta property="og:title" content="Osman Bugra Dagli — DevOps & Systems">
 <meta property="og:description" content="DevOps engineer. Kubernetes by day, kernel-bypass networking by night.">
 <meta property="og:type" content="website">
@@ -134,8 +134,8 @@
           </p>
           <p>
             I think the best ops people understand the layer below the one they operate, so I went there on purpose.
-            I wrote a container runtime from raw namespaces and cgroups and a connection tracker in eBPF/XDP. I also
-            hardened an embedded RTOS kernel against radiation-induced bit flips with LLVM. Now I’m finishing a master’s thesis on kernel-bypass networking at Politecnico di Milano.
+            I wrote a container runtime from raw namespaces and cgroups, and a connection tracker in eBPF/XDP. I also
+            built an embedded RTOS kernel with ASPIS, an LLVM-based tool that hardens code against radiation-induced bit flips. Now I’m finishing a master’s thesis on kernel-bypass networking at Politecnico di Milano.
           </p>
           <p>
             Off the terminal I play table tennis for AON Milano Sport in the Italian league.
@@ -215,7 +215,7 @@
               <span class="hop-rtt">Aug – Sep 2022</span>
             </summary>
             <ul class="hop-body">
-              <li>Ran legacy software that couldn’t be containerized on Kubernetes using <b>KubeVirt</b>, so VMs and containers shared one control plane</li>
+              <li>Used <b>KubeVirt</b> to run legacy software that couldn’t be containerized as VMs on Kubernetes, so VMs and containers shared one control plane</li>
             </ul>
           </details>
         </li>
@@ -264,25 +264,30 @@
 
       <div class="thesis-head">
         <h3 class="thesis-title">Accelerating a Media-over-QUIC Relay with AF_XDP Kernel-Bypass Networking</h3>
-        <p class="thesis-meta">Osman Bugra Dagli · Politecnico di Milano · Jan 2025 – present · in progress</p>
+        <p class="thesis-meta">Osman Bugra Dagli · Politecnico di Milano · Jan 2025 – present</p>
       </div>
 
       <div class="thesis-abstract">
         <p>
           Media over QUIC (MoQ) is an emerging IETF protocol for live media delivery, and relays sit at its core.
           Every packet they forward passes through the kernel’s network stack. This thesis measures how much that
-          costs in Meta’s <strong>moxygen</strong> relay and removes it.
+          costs in Meta’s <strong>moxygen</strong> relay and takes the kernel out of that path.
         </p>
         <p>
           A <code>perf</code>-based CPU-time breakdown shows that kernel packet I/O takes a significant share of each core’s
           time. I built an <strong>AF_XDP zero-copy</strong> fast path and connected it to the QUIC stack through a
-          non-invasive socket-injection seam, so the relay’s entire UDP RX/TX path runs over AF_XDP
-          <strong>with zero changes to the relay’s source</strong>.
+          socket-injection seam: the point where the server chooses which UDP sockets QUIC uses. The relay’s entire
+          UDP RX/TX path now runs over AF_XDP <strong>without changing the relay’s forwarding logic</strong>; the only
+          server change is a few lines, behind a flag, that install the AF_XDP socket factory.
+        </p>
+        <p>
+          On a single core, the AF_XDP path receives about <strong>2.4× more packets per second</strong> than a tuned
+          kernel baseline.
         </p>
       </div>
 
           <div class="bench" role="img" aria-label="Single-core RX throughput: AF_XDP zero-copy about 1.55 million packets per second versus tuned kernel recvmmsg plus GRO about 0.65 million">
-            <p class="bench-title">single-core RX throughput <span class="muted">(Mpps, higher is better)</span></p>
+            <p class="bench-title">single-core RX throughput <span class="muted">(million packets/s, higher is better)</span></p>
             <div class="bench-row">
               <span class="bench-label">kernel · recvmmsg + GRO (tuned)</span>
               <span class="bench-bar"><i style="--w: 41.9%"></i></span>
@@ -327,7 +332,7 @@
       <ul class="bullets thesis-list">
         <li>A <code>perf</code>-based pipeline that breaks down per-core CPU time along the relay’s data path</li>
         <li>An AF_XDP zero-copy RX/TX path reaching <b>~1.55&nbsp;Mpps on one core</b>, against ~0.65&nbsp;Mpps for a <em>tuned</em> kernel baseline (recvmmsg + GRO)</li>
-        <li>A socket-injection seam, built on proxygen’s socket factory, that moves the relay onto AF_XDP without the relay knowing</li>
+        <li>A socket-injection seam, built on proxygen’s socket factory, that moves the relay onto AF_XDP while its forwarding logic stays unchanged</li>
         <li>A reproducible <b>CloudLab testbed</b>: one profile provisions the machines, applies the patch series to moxygen and proxygen, syncs clocks with PTP for one-way latency, and runs the fan-out, throughput and flame-graph experiments</li>
       </ul>
 
@@ -355,12 +360,12 @@
           <p>
             In orbit, a charged particle can flip a bit in a register or in RAM. That’s a <strong>single-event upset</strong>,
             and the code keeps running on a wrong value. <strong>ASPIS</strong> is an LLVM plugin from Politecnico di Milano’s HEAPLab
-            that hardens code against this at the IR level. I integrated it into the build of <strong>Miosix</strong>, an embedded
+            that hardens code against this at the level of LLVM’s intermediate representation (IR). I integrated it into the build of <strong>Miosix</strong>, an embedded
             RTOS, so the kernel itself compiles hardened for an STM32F407.
           </p>
 
           <div class="seu" id="seu">
-            <p class="seu-title">Try it: click any bit of <code>x</code> to hit it with a cosmic ray. EDDI keeps a shadow copy of every value and compares the two before the value is used.</p>
+            <p class="seu-title">Try it: click any bit of <code>x</code> to hit it with a cosmic ray. EDDI (error detection by duplicated instructions) keeps a shadow copy of every value and compares the two before the value is used.</p>
             <div class="seu-reg">
               <span class="seu-name">x</span>
               <span class="bits" id="seu-a" role="group" aria-label="Register x, click a bit to flip it"></span>
@@ -437,7 +442,7 @@
             <span class="tag">eBPF/XDP · May 2025</span>
           </header>
           <p>
-            Connection tracking and TCP fingerprinting that runs <strong>in the kernel at XDP</strong>, before the network
+            Connection tracking and TCP fingerprinting that run <strong>in the kernel at XDP</strong>, before the network
             stack ever allocates an <code>sk_buff</code>.
           </p>
           <ul class="bullets">
@@ -482,7 +487,7 @@
             <span class="tag">Go · HTTP/3</span>
           </header>
           <p>
-            A self-hosted file server over <strong>HTTP/3 / QUIC</strong>. TCP+TLS and QUIC/UDP share one port.
+            A self-hosted file server over <strong>HTTP/3 (QUIC)</strong>. TCP+TLS and QUIC/UDP share one port.
             Browsers arrive over TCP, see <code>Alt-Svc</code> and upgrade themselves.
           </p>
           <ul class="bullets">
