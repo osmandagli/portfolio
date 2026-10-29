@@ -405,7 +405,7 @@ Scrivi <span class="acc">help</span> per vedere cosa c'è. <span class="dim">tab
       `osman bugra dagli: DevOps engineer (CKA), laurea magistrale @ Politecnico di Milano.\nha gestito kubernetes in produzione in Turkish Aerospace, ora bypassa il kernel per passione e per la tesi.`),
     bench: () => {
       const bar = (v) => "█".repeat(Math.round(v / 1.55 * 30)).padEnd(30, "░");
-      return `single-core RX, Mpps\n\nkernel recvmmsg+GRO  <span class="dim">${bar(0.65)}</span>  0.65\nAF_XDP zero-copy     <span class="acc">${bar(1.55)}</span>  <span class="acc">1.55</span>\n\n<span class="acc">~2.4x</span> per core. <span class="dim">${L("cd thesis for the full story", "cd thesis per tutta la storia")}</span>`;
+      return `${L("RX microbenchmark, one core, no per-packet work, Mpps", "microbenchmark RX, un core, nessun lavoro per pacchetto, Mpps")}\n\nkernel recvmmsg+GRO  <span class="dim">${bar(0.65)}</span>  0.65\nAF_XDP zero-copy     <span class="acc">${bar(1.55)}</span>  <span class="acc">1.55</span>\n\n<span class="acc">~2.4x</span> per core. <span class="dim">${L("cd thesis for the full story", "cd thesis per tutta la storia")}</span>`;
     },
     neofetch: () => {
       const logo = [

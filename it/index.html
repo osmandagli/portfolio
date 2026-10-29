@@ -269,20 +269,22 @@
           nel relay <strong>moxygen</strong> di Meta e toglie il kernel da quel percorso.
         </p>
         <p>
-          Un’analisi del tempo CPU basata su <code>perf</code> mostra che l’I/O dei pacchetti nel kernel occupa una quota significativa
-          del tempo di ogni core. Ho costruito un fast path <strong>AF_XDP zero-copy</strong> e l’ho collegato allo stack QUIC tramite un
+          Un’analisi del tempo CPU basata su <code>perf</code> mostra che il relay è limitato dalla CPU di un singolo core, a circa
+          l’1% della velocità di linea da 100&nbsp;Gbit/s della NIC, e che l’I/O dei pacchetti nel kernel occupa il 16–29% del tempo
+          attivo di quel core. Ho costruito un fast path <strong>AF_XDP</strong> e l’ho collegato allo stack QUIC tramite un
           punto di iniezione dei socket: il punto in cui il server sceglie quali socket UDP usa QUIC. L’intero percorso
           UDP RX/TX del relay ora passa per AF_XDP <strong>senza modificare la logica di inoltro del relay</strong>; l’unica
           modifica al server sono poche righe, attivabili con un flag, che installano la socket factory AF_XDP.
         </p>
         <p>
-          Su un singolo core, il percorso AF_XDP riceve circa <strong>2,4 volte più pacchetti al secondo</strong> di una
-          baseline kernel ottimizzata.
+          Il margine è stato misurato prima, con un microbenchmark del percorso di ricezione sullo stesso hardware e senza
+          lavoro applicativo per pacchetto: su un core, AF_XDP zero-copy riceve circa <strong>2,4 volte più pacchetti al
+          secondo</strong> del percorso kernel ottimizzato.
         </p>
       </div>
 
-          <div class="bench" role="img" aria-label="Throughput RX su singolo core: AF_XDP zero-copy circa 1,55 milioni di pacchetti al secondo contro circa 0,65 milioni del kernel ottimizzato con recvmmsg e GRO">
-            <p class="bench-title">throughput RX su singolo core <span class="muted">(milioni di pacchetti/s, più alto è meglio)</span></p>
+          <div class="bench" role="img" aria-label="Microbenchmark del percorso di ricezione su un core, pacchetti UDP da 1500 byte, nessun lavoro per pacchetto: AF_XDP zero-copy circa 1,55 milioni di pacchetti al secondo contro circa 0,65 milioni del kernel ottimizzato con recvmmsg e GRO">
+            <p class="bench-title">microbenchmark del percorso di ricezione, un core <span class="muted">(milioni di pacchetti/s · UDP da 1500 byte · nessun lavoro per pacchetto · Intel E810)</span></p>
             <div class="bench-row">
               <span class="bench-label">kernel · recvmmsg + GRO (ottimizzato)</span>
               <span class="bench-bar"><i style="--w: 41.9%"></i></span>
@@ -326,7 +328,8 @@
       <h4 class="thesis-sub">Contributi</h4>
       <ul class="bullets thesis-list">
         <li>Una pipeline basata su <code>perf</code> che scompone il tempo CPU per core lungo il data path del relay</li>
-        <li>Un percorso RX/TX AF_XDP zero-copy che raggiunge <b>~1,55&nbsp;Mpps su un singolo core</b>, contro ~0,65&nbsp;Mpps di una baseline kernel <em>ottimizzata</em> (recvmmsg + GRO)</li>
+        <li>Un microbenchmark del percorso di ricezione sull’hardware del testbed: AF_XDP zero-copy raggiunge <b>~1,55&nbsp;Mpps su un singolo core</b>, contro ~0,65&nbsp;Mpps di un percorso kernel <em>ottimizzato</em> (recvmmsg + GRO)</li>
+        <li>Un percorso RX/TX AF_XDP per il relay, in un nuovo modulo <code>xdp/</code> di moxygen</li>
         <li>Un punto di iniezione dei socket, costruito sulla socket factory di proxygen, che sposta il relay su AF_XDP lasciando invariata la sua logica di inoltro</li>
         <li>Un <b>testbed CloudLab</b> riproducibile: un solo profilo prepara le macchine, applica le patch a moxygen e proxygen, sincronizza gli orologi con PTP per la latenza one-way ed esegue gli esperimenti di fan-out, throughput e flame graph</li>
       </ul>
