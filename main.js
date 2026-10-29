@@ -7,6 +7,17 @@
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
   const t0 = performance.now();
 
+  /* ---------------- i18n ---------------- */
+  // /it/index.html sets lang="it"; strings built here pick their language with L(en, it).
+  const IT = document.documentElement.lang === "it";
+  const L = (en, it) => (IT ? it : en);
+  // Carry the skill filter and section over when switching language.
+  $$(".lang-switch a[href]").forEach((a) => a.addEventListener("click", () => {
+    const u = new URL(a.getAttribute("href"), location.href);
+    u.search = location.search; u.hash = location.hash;
+    a.href = u;
+  }));
+
   /* ---------------- theme ---------------- */
   const root = document.documentElement;
   $("#theme-toggle").addEventListener("click", () => setTheme());
@@ -51,7 +62,7 @@
     ["h3", `200 OK  <b>x-role: devops-engineer</b>`],
     ["h3", `<b>x-based:</b> milano, it`],
     ["h3", `<b>x-likes:</b> linux, networking, kernels`],
-    ["icmp", `echo request osman: are you hiring? (scroll ↓)`],
+    ["icmp", L(`echo request osman: are you hiring? (scroll ↓)`, `echo request osman: state assumendo? (scorri ↓)`)],
   ];
   const cap = $("#capture");
   const capCount = $("#cap-count");
@@ -65,14 +76,14 @@
     row.innerHTML = `<span class="t">${pktTime.toFixed(6)}</span><span class="proto ${proto}">${proto.toUpperCase()}</span><span class="info">${info}</span>`;
     cap.appendChild(row);
     while (cap.children.length > 11) cap.firstChild.remove();
-    capCount.textContent = `${pi} packets`;
+    capCount.textContent = `${pi} ${L("packets", "pacchetti")}`;
     setTimeout(pushPacket, 180 + Math.random() * 220);
   }
   if (reduceMotion) {
     packets.slice(-11).forEach(([proto, info], i) => {
       cap.insertAdjacentHTML("beforeend", `<div class="pkt"><span class="t">${(i * 0.013).toFixed(6)}</span><span class="proto ${proto}">${proto.toUpperCase()}</span><span class="info">${info}</span></div>`);
     });
-    capCount.textContent = `${packets.length} packets`;
+    capCount.textContent = `${packets.length} ${L("packets", "pacchetti")}`;
   } else {
     setTimeout(pushPacket, 600);
   }
@@ -152,7 +163,7 @@
     for (let i = 7; i >= 0; i--) {
       const v = (seuReg >> i) & 1, orig = (SEU_VALUE >> i) & 1, b = seuBits[i];
       b.textContent = v;
-      b.setAttribute("aria-label", `Bit ${i}, value ${v}. Flip it`);
+      b.setAttribute("aria-label", L(`Bit ${i}, value ${v}. Flip it`, `Bit ${i}, valore ${v}. Invertilo`));
       b.classList.toggle("hit", v !== orig);
       seuShadow[i].classList.toggle("diff", v !== orig);
     }
@@ -160,7 +171,8 @@
     const bad = seuReg !== SEU_VALUE;
     seuStatus.classList.toggle("caught", bad);
     seuStatus.innerHTML = bad
-      ? `<code>icmp eq x, x′</code> is false, so it branches to <b>DataCorruption_Handler()</b>. The flip is caught before the wrong value is used.`
+      ? L(`<code>icmp eq x, x′</code> is false, so it branches to <b>DataCorruption_Handler()</b>. The flip is caught before the wrong value is used.`,
+          `<code>icmp eq x, x′</code> è falso, quindi salta a <b>DataCorruption_Handler()</b>. Il bit flip viene intercettato prima che il valore sbagliato venga usato.`)
       : seuOk;
     seuReset.hidden = !bad;
   }
@@ -200,7 +212,10 @@
       p.classList.toggle("dim", !hit);
       p.classList.toggle("match", hit);
     });
-    status.innerHTML = `<span class="mono">modinfo ${esc(skill)}</span>: ${thesis ? "the thesis, " : ""}${n} project${n === 1 ? "" : "s"}, ${jobs} hop${jobs === 1 ? "" : "s"} in the traceroute. <button type="button" id="clear-filter">rmmod ✕</button>`;
+    const found = L(
+      `${thesis ? "the thesis, " : ""}${n} project${n === 1 ? "" : "s"}, ${jobs} hop${jobs === 1 ? "" : "s"} in the traceroute`,
+      `${thesis ? "la tesi, " : ""}${n} progett${n === 1 ? "o" : "i"}, ${jobs} hop nel traceroute`);
+    status.innerHTML = `<span class="mono">modinfo ${esc(skill)}</span>: ${found}. <button type="button" id="clear-filter">rmmod ✕</button>`;
     $("#clear-filter").addEventListener("click", () => {
       const row = $(`.lsmod-row[data-skill="${CSS.escape(skill)}"]`);
       applyFilter(null);
@@ -257,9 +272,10 @@
       booted = true;
       print(`<span class="dim">Linux osman 6.x #1 SMP PREEMPT_DYNAMIC x86_64</span>
 
-Welcome. This is a (tiny, fake, harmless) shell.
-Type <span class="acc">help</span> to see what's here. <span class="dim">tab completes, ↑/↓ for history</span>
-`);
+` + L(`Welcome. This is a (tiny, fake, harmless) shell.
+Type <span class="acc">help</span> to see what's here. <span class="dim">tab completes, ↑/↓ for history</span>`,
+`Benvenuto. Questa è una shell (piccola, finta, innocua).
+Scrivi <span class="acc">help</span> per vedere cosa c'è. <span class="dim">tab completa, ↑/↓ per la cronologia</span>`) + "\n");
     }
     input.focus();
   }
@@ -284,9 +300,9 @@ Type <span class="acc">help</span> to see what's here. <span class="dim">tab com
     "experience.log": () => $$(".hop").map((h) => h.innerText.replace(/\s*\n\s*/g, "  ").trim()).join("\n"),
     "thesis.txt": () => text("#thesis .thesis-title") + "\n\n" + text("#thesis .thesis-abstract"),
     "now.txt": () => $$(".ps-row:not(.head)").map((r) => "• " + r.children[2].innerText).join("\n"),
-    "cv.pdf": () => `<a href="OsmanBugraDagli_CV.pdf" download>click to download cv.pdf</a> <span class="dim">(binary file, not dumping it on your terminal)</span>`,
+    "cv.pdf": () => `<a href="${IT ? "../" : ""}OsmanBugraDagli_CV.pdf" download>${L("click to download cv.pdf", "clicca per scaricare cv.pdf")}</a> <span class="dim">${L("(binary file, not dumping it on your terminal)", "(file binario, non lo stampo sul tuo terminale)")}</span>`,
     "contact.txt": () => `email   <a href="mailto:osman.dagli687@gmail.com">osman.dagli687@gmail.com</a>\ngithub  <a href="https://github.com/osmandagli" target="_blank" rel="noopener">github.com/osmandagli</a>\nlinkedin <a href="https://www.linkedin.com/in/osman-bugra-dagli-8273551a5/" target="_blank" rel="noopener">linkedin.com/in/osman-bugra-dagli</a>`,
-    ".secrets": () => `<span class="err">cat: .secrets: Permission denied</span>\n<span class="dim">(good instinct though)</span>`,
+    ".secrets": () => `<span class="err">cat: .secrets: Permission denied</span>\n<span class="dim">${L("(good instinct though)", "(però buon istinto)")}</span>`,
   };
   const PROJECTS = () => projects.map((p) => ({
     id: p.id.replace(/^p-/, ""),
@@ -299,7 +315,7 @@ Type <span class="acc">help</span> to see what's here. <span class="dim">tab com
   const goTo = (sel) => { closeShell(); $(sel).scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" }); };
 
   const COMMANDS = {
-    help: () => `<span class="acc">navigation</span>
+    help: () => L(`<span class="acc">navigation</span>
   ls [dir]            list files
   cat &lt;file&gt;          read a file
   cd &lt;section&gt;        jump to: whoami, skills, experience, thesis, projects, iconv, now, contact
@@ -324,7 +340,34 @@ Type <span class="acc">help</span> to see what's here. <span class="dim">tab com
 
 <span class="acc">misc</span>
   theme [light|dark]  switch theme
-  history, clear, exit`,
+  lang [en|it]        switch language
+  history, clear, exit`, `<span class="acc">navigazione</span>
+  ls [dir]            elenca i file
+  cat &lt;file&gt;          leggi un file
+  cd &lt;sezione&gt;        vai a: whoami, skills, experience, thesis, projects, iconv, now, contact
+  open &lt;progetto&gt;     vai a un progetto
+
+<span class="acc">su osman</span>
+  whoami              chi è
+  neofetch            info di sistema, ma su di me
+  projects            elenca i progetti
+  traceroute osman    il percorso di carriera
+  modinfo &lt;skill&gt;     filtra per competenza (es. modinfo af_xdp)
+  bench               i numeri della tesi
+  iconv -l            le lingue che parla osman
+  openssl x509        il suo certificato
+  cosmic-ray          inverti un bit nella demo ASPIS
+
+<span class="acc">rete</span>
+  ping osman          è online?
+  dig osman           risolvilo
+  curl -I osman       header di risposta
+  ss -tlnp            socket in ascolto
+
+<span class="acc">varie</span>
+  theme [light|dark]  cambia tema
+  lang [en|it]        cambia lingua
+  history, clear, exit`),
 
     ls: (args) => {
       if (args[0] && args[0].replace(/\/$/, "") === "projects") return PROJECTS().map((p) => `<span class="cy">${esc(p.id)}</span>`).join("  ");
@@ -347,21 +390,22 @@ Type <span class="acc">help</span> to see what's here. <span class="dim">tab com
     cd: (args) => {
       const k = (args[0] || "~").replace(/\/$/, "");
       if (SECTIONS[k]) { goTo(SECTIONS[k]); return ""; }
-      return `<span class="err">cd: ${esc(k)}: No such file or directory</span>\n<span class="dim">try: ${Object.keys(SECTIONS).filter((s) => /^\w/.test(s)).join(", ")}</span>`;
+      return `<span class="err">cd: ${esc(k)}: No such file or directory</span>\n<span class="dim">${L("try", "prova")}: ${Object.keys(SECTIONS).filter((s) => /^\w/.test(s)).join(", ")}</span>`;
     },
     open: (args) => {
       const p = PROJECTS().find((x) => x.id === (args[0] || "").replace(/^projects\//, ""));
-      if (!p) return `<span class="err">open: no such project</span>. try <span class="acc">projects</span>`;
+      if (!p) return `<span class="err">open: no such project</span>. ${L("try", "prova")} <span class="acc">projects</span>`;
       closeShell();
       p.el.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
       p.el.animate?.([{ boxShadow: "0 0 0 3px var(--accent)" }, { boxShadow: "0 0 0 0 transparent" }], { duration: 1400, delay: 400 });
       return "";
     },
-    projects: () => PROJECTS().map((p) => `<span class="cy">${esc(p.id.padEnd(16))}</span>${esc(p.desc.split(/(?<=\.)\s/)[0])}`).join("\n") + `\n\n<span class="dim">open &lt;name&gt; to jump there</span>`,
-    whoami: () => `osman bugra dagli: DevOps engineer (CKA), MSc @ Politecnico di Milano.\nran kubernetes in production at Turkish Aerospace, now bypasses the kernel for fun and a thesis.`,
+    projects: () => PROJECTS().map((p) => `<span class="cy">${esc(p.id.padEnd(16))}</span>${esc(p.desc.split(/(?<=\.)\s/)[0])}`).join("\n") + `\n\n<span class="dim">${L("open &lt;name&gt; to jump there", "open &lt;nome&gt; per andarci")}</span>`,
+    whoami: () => L(`osman bugra dagli: DevOps engineer (CKA), MSc @ Politecnico di Milano.\nran kubernetes in production at Turkish Aerospace, now bypasses the kernel for fun and a thesis.`,
+      `osman bugra dagli: DevOps engineer (CKA), laurea magistrale @ Politecnico di Milano.\nha gestito kubernetes in produzione in Turkish Aerospace, ora bypassa il kernel per passione e per la tesi.`),
     bench: () => {
       const bar = (v) => "█".repeat(Math.round(v / 1.55 * 30)).padEnd(30, "░");
-      return `single-core RX, Mpps\n\nkernel recvmmsg+GRO  <span class="dim">${bar(0.65)}</span>  0.65\nAF_XDP zero-copy     <span class="acc">${bar(1.55)}</span>  <span class="acc">1.55</span>\n\n<span class="acc">~2.4x</span> per core. <span class="dim">cd thesis for the full story</span>`;
+      return `single-core RX, Mpps\n\nkernel recvmmsg+GRO  <span class="dim">${bar(0.65)}</span>  0.65\nAF_XDP zero-copy     <span class="acc">${bar(1.55)}</span>  <span class="acc">1.55</span>\n\n<span class="acc">~2.4x</span> per core. <span class="dim">${L("cd thesis for the full story", "cd thesis per tutta la storia")}</span>`;
     },
     neofetch: () => {
       const logo = [
@@ -382,7 +426,7 @@ Type <span class="acc">help</span> to see what's here. <span class="dim">tab com
         `<span class="acc">Prev</span>: TUSAS, ASELSAN`,
         `<span class="acc">Langs</span>: Go, Python, Bash`,
         `<span class="acc">Into</span>: AF_XDP, eBPF/XDP, LLVM, STM32`,
-        `<span class="acc">Uptime</span>: ${fmtUp()} (on this page)`,
+        `<span class="acc">Uptime</span>: ${fmtUp()} ${L("(on this page)", "(su questa pagina)")}`,
       ];
       return logo.map((l, i) => `<span class="acc">${esc(l)}</span>  ${info[i] || ""}`).join("\n");
     },
@@ -392,7 +436,7 @@ Type <span class="acc">help</span> to see what's here. <span class="dim">tab com
         const rtt = $(".hop-rtt", h)?.innerText.trim() || "";
         return ` ${i + 1}  ${esc(host)}  <span class="cy">${esc(rtt)}</span>`;
       });
-      return `traceroute to osman (present), 30 hops max\n` + rows.join("\n") + `\n\n<span class="dim">cd experience for details</span>`;
+      return `traceroute to osman (present), 30 hops max\n` + rows.join("\n") + `\n\n<span class="dim">${L("cd experience for details", "cd experience per i dettagli")}</span>`;
     },
     modinfo: (args) => {
       if (!args[0]) return `<span class="err">modinfo: missing module name</span>`;
@@ -401,14 +445,14 @@ Type <span class="acc">help</span> to see what's here. <span class="dim">tab com
       if (!$(`.lsmod-row[data-skill="${CSS.escape(skill)}"]`)) return `<span class="err">modinfo: ERROR: Module ${esc(args[0])} not found.</span>`;
       const n = applyFilter(skill);
       setTimeout(() => { closeShell(); scrollToFirstMatch(); }, 700);
-      return `filename:  /lib/modules/osman/${esc(skill)}.ko\nmatches:   ${n}\n<span class="dim">filtering…</span>`;
+      return `filename:  /lib/modules/osman/${esc(skill)}.ko\nmatches:   ${n}\n<span class="dim">${L("filtering…", "filtro in corso…")}</span>`;
     },
-    rmmod: () => { applyFilter(null); return "filter cleared"; },
+    rmmod: () => { applyFilter(null); return L("filter cleared", "filtro rimosso"); },
     ping: (args) => {
       const host = esc(args[0] || "osman");
       const lines = [`PING ${host} (203.0.113.1) 56(84) bytes of data.`];
       for (let i = 1; i <= 4; i++) lines.push(`64 bytes from ${host}: icmp_seq=${i} ttl=64 time=${(Math.random() * 2 + 0.2).toFixed(2)} ms`);
-      lines.push(`\n--- ${host} ping statistics ---\n4 packets transmitted, 4 received, <span class="ok">0% packet loss</span>\n<span class="acc">he's up. send an email → cat contact.txt</span>`);
+      lines.push(`\n--- ${host} ping statistics ---\n4 packets transmitted, 4 received, <span class="ok">0% packet loss</span>\n<span class="acc">${L("he's up. send an email → cat contact.txt", "è online. mandagli una email → cat contact.txt")}</span>`);
       return lines.join("\n");
     },
     dig: () => `;; QUESTION SECTION:\n;osman.            IN  A\n\n;; ANSWER SECTION:\nosman.     300  IN  TXT  "devops engineer, CKA"\nosman.     300  IN  TXT  "open to: devops, platform, sre; also network software"\nosman.     300  IN  LOC  "Milano, IT (open to relocate)"\nosman.     300  IN  MX   10 <a href="mailto:osman.dagli687@gmail.com">osman.dagli687@gmail.com</a>\n\n;; Query time: 0 msec`,
@@ -422,13 +466,20 @@ Type <span class="acc">help</span> to see what's here. <span class="dim">tab com
     pwd: () => "/home/osman",
     echo: (args) => esc(args.join(" ")),
     date: () => new Intl.DateTimeFormat(navigator.language, { dateStyle: "full", timeStyle: "long" }).format(new Date()),
-    sudo: (args) => args.join(" ").includes("rm") ? `<span class="err">nice try.</span> this incident will be reported (to nobody).` : `visitor is not in the sudoers file. <span class="dim">hire osman to get root.</span>`,
+    sudo: (args) => args.join(" ").includes("rm") ? L(`<span class="err">nice try.</span> this incident will be reported (to nobody).`, `<span class="err">bel tentativo.</span> questo incidente verrà segnalato (a nessuno).`) : L(`visitor is not in the sudoers file. <span class="dim">hire osman to get root.</span>`, `visitor is not in the sudoers file. <span class="dim">assumi osman per avere root.</span>`),
     rm: () => `<span class="err">rm: cannot remove: Read-only file system</span>`,
-    vim: () => `you are now stuck in vim. <span class="dim">(just kidding, type :q)</span>`,
-    ":q": () => `<span class="dim">phew.</span>`,
-    emacs: () => `<span class="dim">emacs: command not found (the jury is still out)</span>`,
+    vim: () => L(`you are now stuck in vim. <span class="dim">(just kidding, type :q)</span>`, `ora sei bloccato in vim. <span class="dim">(scherzo, scrivi :q)</span>`),
+    ":q": () => `<span class="dim">${L("phew.", "fiuu.")}</span>`,
+    emacs: () => `<span class="dim">emacs: command not found ${L("(the jury is still out)", "(la giuria è ancora in camera di consiglio)")}</span>`,
     hire: () => { goTo("#connect"); return ""; },
     iconv: () => `tr_TR.UTF-8   Türkçe     <span class="ok">native</span>\nen_US.UTF-8   English    <span class="ok">professional</span>\nit_IT.UTF-8   Italiano   <span class="acc">B1</span>`,
+    lang: (args) => {
+      const want = args[0] || (IT ? "en" : "it");
+      if (want !== "en" && want !== "it") return `<span class="err">lang: ${esc(want)}: ${L("unsupported locale", "lingua non supportata")}</span> <span class="dim">(en, it)</span>`;
+      if ((want === "it") === IT) return `lang: ${want}`;
+      $(`.lang-switch a[hreflang="${want}"]`).click();
+      return `lang: ${want}`;
+    },
     openssl: () => `Subject: CN = Osman Bugra Dagli\nIssuer:  O = The Linux Foundation, OU = CNCF\nX509v3 Extended Key Usage:\n    <span class="acc">Certified Kubernetes Administrator (CKA)</span>\nVerify return code: <span class="ok">0 (ok)</span>`,
     "cosmic-ray": () => {
       flipBit();
@@ -445,7 +496,7 @@ Type <span class="acc">help</span> to see what's here. <span class="dim">tab com
     const [cmd, ...args] = line.trim().split(/\s+/);
     if (!cmd) return;
     const fn = COMMANDS[cmd];
-    const res = fn ? fn(args) : `<span class="err">${esc(cmd)}: command not found</span>. try <span class="acc">help</span>`;
+    const res = fn ? fn(args) : `<span class="err">${esc(cmd)}: command not found</span>. ${L("try", "prova")} <span class="acc">help</span>`;
     if (res) print(res);
   }
 

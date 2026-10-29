@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Osman Bugra Dagli — DevOps & Sistemi</title>
+<meta name="description" content="Osman Bugra Dagli — DevOps engineer (CKA) e studente magistrale al Politecnico di Milano che lavora sotto l’astrazione: Kubernetes, AF_XDP, eBPF/XDP, QUIC, internals di Linux, Go.">
+<meta property="og:title" content="Osman Bugra Dagli — DevOps & Sistemi">
+<meta property="og:description" content="DevOps engineer. Kubernetes di giorno, networking kernel-bypass di notte.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://osmandagli.com/it/">
+<meta property="og:locale" content="it_IT">
+<meta property="og:locale:alternate" content="en_US">
+<link rel="canonical" href="https://osmandagli.com/it/">
+<link rel="alternate" hreflang="en" href="https://osmandagli.com/">
+<link rel="alternate" hreflang="it" href="https://osmandagli.com/it/">
+<link rel="alternate" hreflang="x-default" href="https://osmandagli.com/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Osman Bugra Dagli",
+  "alternateName": ["Osman Buğra Dağlı", "Osman Dagli", "Osman Dağlı"],
+  "url": "https://osmandagli.com/it/",
+  "jobTitle": "DevOps Engineer",
+  "email": "mailto:osman.dagli687@gmail.com",
+  "address": { "@type": "PostalAddress", "addressLocality": "Milano", "addressCountry": "IT" },
+  "alumniOf": [
+    { "@type": "CollegeOrUniversity", "name": "Ankara University" },
+    { "@type": "CollegeOrUniversity", "name": "Politecnico di Milano" }
+  ],
+  "hasCredential": { "@type": "EducationalOccupationalCredential", "name": "Certified Kubernetes Administrator (CKA)" },
+  "knowsAbout": ["DevOps", "Kubernetes", "Linux", "AF_XDP", "eBPF", "QUIC", "Go", "Networking"],
+  "sameAs": ["https://github.com/osmandagli", "https://www.linkedin.com/in/osman-bugra-dagli-8273551a5/"]
+}
+</script>
+<meta name="theme-color" content="#0B0E12" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F6F5F1" media="(prefers-color-scheme: light)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230B0E12'/%3E%3Ctext x='5' y='22' font-family='monospace' font-size='16' font-weight='700' fill='%23FFB547'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../style.css">
+<script>
+  // Apply saved theme before paint to avoid a flash.
+  try { var t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Vai al contenuto</a>
+
+<!-- Italian copy of /index.html. Keep the two in sync when content changes. -->
+
+<header class="topbar">
+  <a class="prompt" translate="no" href="#top" aria-label="Torna all’inizio">
+    <span class="p-user">osman</span><span class="p-at">@</span><span class="p-host">dagli</span><span class="p-path">:~$</span><span class="cursor" aria-hidden="true"></span>
+  </a>
+  <div class="topbar-actions">
+    <nav class="lang-switch" aria-label="Lingua">
+      <a href="../" hreflang="en" lang="en" title="English">en</a>
+      <a aria-current="page" title="Italiano">it</a>
+    </nav>
+    <button class="btn-ghost" id="open-shell" type="button" title="Apri una shell (premi /)">
+      <span class="kbd">/</span> shell
+    </button>
+    <button class="btn-ghost icon" id="theme-toggle" type="button" aria-label="Cambia tema chiaro/scuro">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.39 5.39 0 0 1-4.4 2.26 5.4 5.4 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="layout" id="top">
+
+  <!-- Wireshark-style packet dissection = site navigation -->
+  <aside class="rail" aria-label="Sezioni">
+    <p class="rail-title">Dettagli del pacchetto</p>
+    <ol class="dissect">
+      <li><a href="#top" data-sec="top"><span class="tw" aria-hidden="true">▸</span> Frame 1: 1 visitatore</a></li>
+      <li><a href="#whoami" data-sec="whoami"><span class="tw" aria-hidden="true">▸</span> <b>L1</b> Fisico <i>whoami</i></a></li>
+      <li><a href="#toolbox" data-sec="toolbox"><span class="tw" aria-hidden="true">▸</span> <b>L2</b> Collegamento <i>lsmod</i></a></li>
+      <li><a href="#route" data-sec="route"><span class="tw" aria-hidden="true">▸</span> <b>L3</b> Rete <i>traceroute</i></a></li>
+      <li><a href="#thesis" data-sec="thesis"><span class="tw" aria-hidden="true">▸</span> <b>L4</b> Trasporto <i>tesi</i></a></li>
+      <li><a href="#projects" data-sec="projects"><span class="tw" aria-hidden="true">▸</span> <b>L5</b> Sessione <i>progetti</i></a></li>
+      <li><a href="#encodings" data-sec="encodings"><span class="tw" aria-hidden="true">▸</span> <b>L6</b> Presentazione <i>iconv</i></a></li>
+      <li><a href="#now" data-sec="now"><span class="tw" aria-hidden="true">▸</span> <b>L7</b> Applicazione <i>ora</i></a></li>
+      <li><a href="#connect" data-sec="connect"><span class="tw" aria-hidden="true">▸</span> <b>SYN</b> Apri una connessione</a></li>
+    </ol>
+    <div class="rail-hex" aria-hidden="true" id="rail-hex"></div>
+    <p class="rail-hint">Premi <span class="kbd">/</span> per aprire una shell. Prova <code>help</code>.</p>
+  </aside>
+
+  <main id="main" tabindex="-1">
+
+    <!-- ===================== HERO ===================== -->
+    <section class="hero" data-section="top">
+      <p class="kicker"><span class="dot live" aria-hidden="true"></span> Frame 1 · catturato adesso · <span id="uptime">uptime 0s</span></p>
+      <h1>Osman Bugra Dagli</h1>
+      <p class="lede">DevOps engineer a cui piacciono i livelli <em>sottostanti</em>.</p>
+      <p class="hero-copy">
+        Sono un DevOps engineer a Milano. Tengo in piedi l’infrastruttura e mi piace scoprire come funziona
+        sotto: Linux, il networking e il kernel.
+      </p>
+      <div class="hero-cta">
+        <a class="btn" href="#whoami">Analizza questo pacchetto ↓</a>
+        <button class="btn btn-outline" type="button" data-open-shell>Apri una shell <span class="kbd">/</span></button>
+      </div>
+
+      <figure class="capture" translate="no" aria-label="Cattura di pacchetti simulata della tua visita a questo sito">
+        <figcaption>
+          <span class="cap-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>tcpdump -i eth0 -nn 'host osman'</span>
+          <span class="cap-count" id="cap-count">0 pacchetti</span>
+        </figcaption>
+        <div class="cap-body" id="capture" role="log" aria-live="off"></div>
+      </figure>
+    </section>
+
+    <!-- ===================== L1 WHOAMI ===================== -->
+    <section id="whoami" data-section="whoami">
+      <p class="kicker"><span class="layer">L1</span> Fisico · l’hardware vero e proprio</p>
+      <h2>whoami</h2>
+      <div class="split">
+        <div class="prose">
+          <p>
+            Sono un DevOps engineer e un <abbr title="Certified Kubernetes Administrator">CKA</abbr>. In Turkish Aerospace (TUSAS)
+            ho costruito e gestito infrastruttura containerizzata su Kubernetes, ho guidato la migrazione di application server
+            come Tomcat dalle VM tradizionali e ho ottimizzato le pipeline GitLab CI/CD che portavano tutto in produzione.
+            Prima ancora, in ASELSAN, ho fatto girare su Kubernetes, con KubeVirt, software legacy che <em>non si poteva</em> containerizzare.
+          </p>
+          <p>
+            Credo che i migliori ops conoscano il livello sotto quello che gestiscono, quindi ci sono andato di proposito.
+            Ho scritto un container runtime partendo da namespace e cgroup nudi e un connection tracker in eBPF/XDP. Ho anche
+            reso un kernel RTOS embedded resistente ai bit flip causati dalle radiazioni, con LLVM. Ora sto concludendo una tesi magistrale sul networking kernel-bypass al Politecnico di Milano.
+          </p>
+          <p>
+            Lontano dal terminale gioco a tennistavolo con l’AON Milano Sport nel campionato italiano.
+          </p>
+        </div>
+
+        <dl class="spec" aria-label="In breve">
+          <div><dt>ruolo</dt><dd>DevOps engineer</dd></div>
+          <div><dt>studio</dt><dd>Laurea magistrale, Politecnico di Milano</dd></div>
+          <div><dt>lang</dt><dd>Go · Python · Bash</dd></div>
+          <div><dt>passioni</dt><dd>XDP, AF_XDP, eBPF, QUIC</dd></div>
+          <div><dt>sede</dt><dd>Milano · disponibile a trasferirmi</dd></div>
+          <div><dt>stato</dt><dd><span class="dot live" aria-hidden="true"></span> disponibile</dd></div>
+          <div><dt>cerco</dt><dd>DevOps · platform · SRE</dd></div>
+          <div><dt>anche</dt><dd>software di rete</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- ===================== L2 TOOLBOX ===================== -->
+    <section id="toolbox" data-section="toolbox">
+      <p class="kicker"><span class="layer">L2</span> Collegamento dati · ciò che unisce tutto</p>
+      <h2>lsmod</h2>
+      <p class="section-sub">I moduli caricati in questo ingegnere. Cliccane uno per vedere dove l’ho usato, al lavoro o nei progetti.</p>
+
+      <div class="lsmod" translate="no" role="group" aria-label="Competenze. Selezionane una per filtrare carriera, tesi e progetti">
+        <div class="lsmod-row head" aria-hidden="true">
+          <span>Modulo</span><span>Area</span><span>Usato da</span>
+        </div>
+        <!-- data-skill must match tokens in data-skills on .proj and .hop -->
+        <button class="lsmod-row" data-skill="kubernetes" type="button"><span>kubernetes <small class="badge">CKA</small></span><span>orchestrazione</span><span>tusas, aselsan</span></button>
+        <button class="lsmod-row" data-skill="helm" type="button"><span>helm</span><span>packaging</span><span>tusas</span></button>
+        <button class="lsmod-row" data-skill="cicd" type="button"><span>gitlab_ci</span><span>delivery</span><span>tusas</span></button>
+        <button class="lsmod-row" data-skill="kubevirt" type="button"><span>kubevirt</span><span>virtualizzazione</span><span>aselsan</span></button>
+        <button class="lsmod-row" data-skill="go" type="button"><span>go</span><span>linguaggio</span><span>containerrt, cloud_storage</span></button>
+        <button class="lsmod-row" data-skill="python" type="button"><span>python</span><span>linguaggio</span><span>tusas, cd2alloy, tesi</span></button>
+        <button class="lsmod-row" data-skill="c" type="button"><span>c · c++</span><span>linguaggio</span><span>miosix_aspis, conntracker, tesi</span></button>
+        <button class="lsmod-row" data-skill="llvm" type="button"><span>llvm · clang</span><span>compilatori</span><span>miosix_aspis</span></button>
+        <button class="lsmod-row" data-skill="embedded" type="button"><span>stm32 · miosix</span><span>embedded</span><span>miosix_aspis</span></button>
+        <button class="lsmod-row" data-skill="formal" type="button"><span>alloy</span><span>metodi formali</span><span>cd2alloy</span></button>
+        <button class="lsmod-row" data-skill="linux" type="button"><span>linux</span><span>sistemi</span><span>quasi tutto</span></button>
+        <button class="lsmod-row" data-skill="containers" type="button"><span>namespaces · cgroups</span><span>kernel</span><span>containerrt, tusas</span></button>
+        <button class="lsmod-row" data-skill="xdp" type="button"><span>ebpf · xdp</span><span>kernel</span><span>conntracker, tesi</span></button>
+        <button class="lsmod-row" data-skill="afxdp" type="button"><span>af_xdp</span><span>kernel bypass</span><span>tesi</span></button>
+        <button class="lsmod-row" data-skill="quic" type="button"><span>quic · http3</span><span>reti</span><span>tesi, cloud_storage</span></button>
+        <button class="lsmod-row" data-skill="networking" type="button"><span>tcp_ip</span><span>reti</span><span>conntracker, tesi, cloud_storage</span></button>
+        <button class="lsmod-row" data-skill="perf" type="button"><span>perf</span><span>profiling</span><span>tesi</span></button>
+        <button class="lsmod-row" data-skill="bash" type="button"><span>bash</span><span>collante</span><span>tutto</span></button>
+      </div>
+    </section>
+
+    <!-- ===================== L3 ROUTE ===================== -->
+    <section id="route" data-section="route">
+      <p class="kicker"><span class="layer">L3</span> Rete · come sono arrivato qui</p>
+      <h2>traceroute osman</h2>
+      <p class="section-sub mono">traceroute to osman (present), 30 hops max, 60 byte packets</p>
+
+      <ol class="hops">
+        <li class="hop" data-skills="linux python networking">
+          <details>
+            <summary>
+              <span class="hop-n">1</span>
+              <span class="hop-host"><b>Laurea triennale in Ingegneria Informatica</b> <span class="muted">@ Università di Ankara</span></span>
+              <span class="hop-rtt">2018 – 2023</span>
+            </summary>
+            <ul class="hop-body">
+              <li>Laureato con una media di <b>3,81 / 4,0</b> (GPA)</li>
+              <li>Ho iniziato a lavorare nell’industria durante gli studi, prima come stagista in ASELSAN e poi in TUSAS</li>
+            </ul>
+          </details>
+        </li>
+        <li class="hop" data-skills="kubernetes kubevirt linux">
+          <details>
+            <summary>
+              <span class="hop-n">2</span>
+              <span class="hop-host"><b>Stagista DevOps</b> <span class="muted">@ ASELSAN</span></span>
+              <span class="hop-rtt">ago – set 2022</span>
+            </summary>
+            <ul class="hop-body">
+              <li>Ho portato su Kubernetes software legacy non containerizzabile usando <b>KubeVirt</b>, così VM e container condividevano un unico control plane</li>
+            </ul>
+          </details>
+        </li>
+        <li class="hop" data-skills="kubernetes helm cicd containers linux bash python">
+          <details open>
+            <summary>
+              <span class="hop-n">3</span>
+              <span class="hop-host"><b>DevOps Engineer</b> <span class="muted">@ Turkish Aerospace (TUSAS)</span></span>
+              <span class="hop-rtt">nov 2022 – set 2024</span>
+            </summary>
+            <ul class="hop-body">
+              <li>Ho costruito e mantenuto infrastruttura containerizzata su <b>Kubernetes</b></li>
+              <li><b>Ho guidato la migrazione</b> degli application server (ad es. Tomcat) da deployment sul sistema operativo a Kubernetes</li>
+              <li>Ho risolto problemi e ottimizzato le pipeline <b>GitLab CI/CD</b> di integrazione e deployment</li>
+              <li>Ho scritto automazioni in Bash e Python che hanno tolto al team il lavoro ripetitivo</li>
+            </ul>
+          </details>
+        </li>
+        <li class="hop" data-skills="afxdp xdp quic perf networking linux">
+          <details open>
+            <summary>
+              <span class="hop-n">4</span>
+              <span class="hop-host"><b>Laurea magistrale</b> <span class="muted">@ Politecnico di Milano</span></span>
+              <span class="hop-rtt">set 2024 – dic 2026</span>
+            </summary>
+            <ul class="hop-body">
+              <li>Corsi: Network Computing, Computing Infrastructures, Advanced OS, Advanced Algorithms, IoT</li>
+              <li>Tesi: networking kernel-bypass per un relay Media-over-QUIC (<a class="link" href="#thesis">scopri di più</a>)</li>
+            </ul>
+          </details>
+        </li>
+        <li class="hop hop-next">
+          <div class="hop-static">
+            <span class="hop-n">5</span>
+            <span class="hop-host">* * * <span class="muted">richiesta scaduta. Forse il tuo team è il prossimo hop?</span></span>
+            <a class="hop-rtt link" href="#connect">invia SYN →</a>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ===================== L4 THESIS ===================== -->
+    <section id="thesis" data-section="thesis" class="thesis" data-skills="afxdp xdp quic perf networking linux python c">
+      <p class="kicker"><span class="layer">L4</span> Trasporto · la mia tesi magistrale</p>
+      <h2>Tesi</h2>
+
+      <div class="thesis-head">
+        <h3 class="thesis-title" lang="en">Accelerating a Media-over-QUIC Relay with AF_XDP Kernel-Bypass Networking</h3>
+        <p class="thesis-meta">Osman Bugra Dagli · Politecnico di Milano · gen 2025 – oggi · in corso</p>
+      </div>
+
+      <div class="thesis-abstract">
+        <p>
+          Media over QUIC (MoQ) è un protocollo IETF emergente per la distribuzione di media in diretta, e i relay ne sono il cuore.
+          Ogni pacchetto che inoltrano attraversa lo stack di rete del kernel. Questa tesi misura quanto costa
+          nel relay <strong>moxygen</strong> di Meta e lo elimina.
+        </p>
+        <p>
+          Un’analisi del tempo CPU basata su <code>perf</code> mostra che l’I/O dei pacchetti nel kernel occupa una quota significativa
+          del tempo di ogni core. Ho costruito un fast path <strong>AF_XDP zero-copy</strong> e l’ho collegato allo stack QUIC tramite un
+          punto di iniezione dei socket non invasivo, così l’intero percorso UDP RX/TX del relay passa per AF_XDP
+          <strong>senza modificare il codice sorgente del relay</strong>.
+        </p>
+      </div>
+
+          <div class="bench" role="img" aria-label="Throughput RX su singolo core: AF_XDP zero-copy circa 1,55 milioni di pacchetti al secondo contro circa 0,65 milioni del kernel ottimizzato con recvmmsg e GRO">
+            <p class="bench-title">throughput RX su singolo core <span class="muted">(Mpps, più alto è meglio)</span></p>
+            <div class="bench-row">
+              <span class="bench-label">kernel · recvmmsg + GRO (ottimizzato)</span>
+              <span class="bench-bar"><i style="--w: 41.9%"></i></span>
+              <span class="bench-val">~0,65</span>
+            </div>
+            <div class="bench-row win">
+              <span class="bench-label">AF_XDP · zero-copy</span>
+              <span class="bench-bar"><i style="--w: 100%"></i></span>
+              <span class="bench-val">~1,55</span>
+            </div>
+            <p class="bench-foot"><b>~2,4×</b> per core</p>
+          </div>
+
+          <div class="paths">
+            <div>
+              <p class="path-title muted">prima: ogni pacchetto attraversa il kernel</p>
+              <ol class="flow" translate="no">
+                <li><span>NIC</span></li>
+                <li><span>driver · sk_buff</span></li>
+                <li><span>UDP stack</span></li>
+                <li><span>recvmmsg</span></li>
+                <li><span>QUIC</span></li>
+                <li><span>relay</span></li>
+              </ol>
+            </div>
+            <div>
+              <p class="path-title">dopo: kernel bypass</p>
+              <ol class="flow hot" translate="no">
+                <li><span>NIC</span></li>
+                <li><span>XDP redirect</span></li>
+                <li><span>UMEM (zero-copy)</span></li>
+                <li><span>AF_XDP socket</span></li>
+                <li><span>injection seam</span></li>
+                <li><span>QUIC</span></li>
+                <li><span>relay</span></li>
+              </ol>
+            </div>
+          </div>
+
+
+      <h4 class="thesis-sub">Contributi</h4>
+      <ul class="bullets thesis-list">
+        <li>Una pipeline basata su <code>perf</code> che scompone il tempo CPU per core lungo il data path del relay</li>
+        <li>Un percorso RX/TX AF_XDP zero-copy che raggiunge <b>~1,55&nbsp;Mpps su un singolo core</b>, contro ~0,65&nbsp;Mpps di una baseline kernel <em>ottimizzata</em> (recvmmsg + GRO)</li>
+        <li>Un punto di iniezione dei socket, costruito sulla socket factory di proxygen, che sposta il relay su AF_XDP senza che il relay se ne accorga</li>
+        <li>Un <b>testbed CloudLab</b> riproducibile: un solo profilo prepara le macchine, applica le patch a moxygen e proxygen, sincronizza gli orologi con PTP per la latenza one-way ed esegue gli esperimenti di fan-out, throughput e flame graph</li>
+      </ul>
+
+      <div class="thesis-links">
+        <a class="btn btn-outline" href="https://github.com/osmandagli/cloudlab-profile" target="_blank" rel="noopener">Testbed e patch ↗</a>
+        <a class="btn btn-outline" href="https://github.com/osmandagli/moxygen" target="_blank" rel="noopener">Fork di moxygen ↗</a>
+      </div>
+    </section>
+
+    <!-- ===================== L5 PROJECTS ===================== -->
+    <section id="projects" data-section="projects">
+      <p class="kicker"><span class="layer">L5</span> Sessione · dove va il mio tempo libero</p>
+      <h2>Progetti</h2>
+      <p class="section-sub filter-status" id="filter-status" aria-live="polite">Cose che ho costruito per capire come funzionano. Filtrale con la tabella <a href="#toolbox">lsmod</a> qui sopra.</p>
+
+      <div class="projects">
+
+        <!-- ---------- ASPIS x MIOSIX ---------- -->
+        <article class="proj featured" data-skills="llvm embedded c linux" id="p-aspis">
+          <div class="hexline" data-hex="miosix+aspis"></div>
+          <header>
+            <h3>Miosix resistente alle radiazioni</h3>
+            <span class="tag">LLVM · STM32 · 2026</span>
+          </header>
+          <p>
+            In orbita, una particella carica può invertire un bit in un registro o in RAM. È un <strong>single-event upset</strong>,
+            e il codice continua a girare con un valore sbagliato. <strong>ASPIS</strong> è un plugin LLVM dell’HEAPLab del Politecnico di Milano
+            che protegge il codice da questo problema a livello di IR. L’ho integrato nella build di <strong>Miosix</strong>, un RTOS
+            embedded, così il kernel stesso viene compilato in versione protetta per un STM32F407.
+          </p>
+
+          <div class="seu" id="seu">
+            <p class="seu-title">Prova: clicca un bit qualsiasi di <code>x</code> per colpirlo con un raggio cosmico. EDDI tiene una copia ombra di ogni valore e confronta le due prima di usarlo.</p>
+            <div class="seu-reg">
+              <span class="seu-name">x</span>
+              <span class="bits" id="seu-a" role="group" aria-label="Registro x, clicca un bit per invertirlo"></span>
+              <span class="seu-hex" id="seu-a-hex">0x2A</span>
+            </div>
+            <div class="seu-reg">
+              <span class="seu-name">x′ <span class="muted">ombra</span></span>
+              <span class="bits" id="seu-b" aria-hidden="true"></span>
+              <span class="seu-hex">0x2A</span>
+            </div>
+            <p class="seu-status" id="seu-status" aria-live="polite"><code>icmp eq x, x′</code> è vero, quindi l’esecuzione continua.</p>
+            <button type="button" class="btn-ghost" id="seu-reset" hidden>Ripristina</button>
+          </div>
+
+          <ol class="flow" translate="no">
+            <li><span>C / C++</span></li>
+            <li><span>clang</span><small>emits LLVM IR</small></li>
+            <li><span>llvm-link</span></li>
+            <li><span>ASPIS passes</span><small>EDDI + CFCSS</small></li>
+            <li><span>codegen</span></li>
+            <li><span>.elf → .bin</span><small>objcopy</small></li>
+            <li><span>STM32F407</span></li>
+          </ol>
+          <ul class="bullets">
+            <li>Un modulo CMake che fa passare qualsiasi target per la pipeline clang → opt → link e salta automaticamente i file assembly</li>
+            <li>Ogni pass si può scegliere dallo script di build: duplicazione dei dati (<code>eddi</code>, <code>reddi</code>, <code>seddi</code>, <code>fdsc</code>) e controllo del flusso (<code>cfcss</code>, <code>rasm</code>, <code>inter-rasm</code>, <code>racfed</code>)</li>
+            <li>Ho compilato <b>l’intero kernel</b> con ASPIS, poi sono passato a una protezione selettiva con annotazioni sullo scheduler</li>
+            <li>Un toolchain file clang che può puntare a qualsiasi installazione di LLVM, più un passaggio objcopy che produce un <code>.bin</code> pronto da flashare</li>
+          </ul>
+          <footer>
+            <span class="stack">c++ · llvm · cmake · miosix · stm32</span>
+            <a class="link" href="https://github.com/osmandagli/miosix-kernel/tree/clang" target="_blank" rel="noopener">sorgente ↗</a>
+          </footer>
+        </article>
+
+        <!-- ---------- CONTAINERRT ---------- -->
+        <article class="proj featured" data-skills="go containers linux" id="p-containerrt">
+          <div class="hexline" data-hex="containerrt"></div>
+          <header>
+            <h3>containerrt</h3>
+            <span class="tag">Go · mar 2026</span>
+          </header>
+          <p>
+            Un container runtime minimale scritto da zero sulle primitive Linux, senza runc né libcontainer.
+            Volevo sapere esattamente cosa fa <code>docker run</code> prima che il processo parta.
+          </p>
+          <ol class="flow" translate="no">
+            <li><span>clone()</span><small>NEWUTS · NEWPID · NEWNS</small></li>
+            <li><span>pivot_root</span><small>host root fully unmounted</small></li>
+            <li><span>tmpfs /dev</span><small>essential device nodes</small></li>
+            <li><span>cgroup v2</span><small>limits applied by parent</small></li>
+            <li><span>pipe barrier</span><small>child waits for setup</small></li>
+            <li><span>exec</span></li>
+          </ol>
+          <ul class="bullets">
+            <li>Isolamento con i namespace <b>UTS, PID e mount</b></li>
+            <li><code>pivot_root</code> invece di <code>chroot</code>: la root dell’host viene smontata, non solo nascosta</li>
+            <li>Un <code>/dev</code> tmpfs effimero con i soli device node essenziali</li>
+            <li>Una <b>barriera di sincronizzazione su pipe</b> tra padre e figlio garantisce che il processo parta già dentro i limiti cgroup v2, senza race con il setup</li>
+            <li>Un vero init: raccoglie gli zombie, inoltra <code>SIGINT</code>/<code>SIGTERM</code> ed esce con il codice del processo (128 + segnale)</li>
+            <li>Testato con tentativi di evasione, monitoraggio di <code>pids.current</code> e OOM kill sotto <code>memory.max</code></li>
+          </ul>
+          <footer>
+            <span class="stack">go · namespaces · cgroups v2 · pivot_root</span>
+            <a class="link" href="https://github.com/osmandagli/container_runtime" target="_blank" rel="noopener">sorgente ↗</a>
+          </footer>
+        </article>
+
+        <!-- ---------- CONNTRACKER ---------- -->
+        <article class="proj" data-skills="xdp networking linux" id="p-conntracker">
+          <div class="hexline" data-hex="conntracker"></div>
+          <header>
+            <h3>conntracker</h3>
+            <span class="tag">eBPF/XDP · mag 2025</span>
+          </header>
+          <p>
+            Connection tracking e fingerprinting TCP che girano <strong>nel kernel, a livello XDP</strong>, prima ancora che lo stack
+            di rete allochi un <code>sk_buff</code>.
+          </p>
+          <ul class="bullets">
+            <li><b>Macchine a stati</b> TCP e UDP in eBPF, con metriche per connessione</li>
+            <li>Estrae le sequenze di opzioni TCP (MSS, SACK, timestamp, window scale) per il fingerprinting di sistema operativo e stack</li>
+            <li>Un demone user-space in C carica una configurazione YAML, aggancia il programma ed espone statistiche e ban list via HTTP</li>
+            <li><b>Count-Min sketch</b> e <b>filtri di Bloom</b> per un filtraggio rapido a soglia con memoria limitata</li>
+          </ul>
+          <footer>
+            <span class="stack">ebpf · xdp · probabilistic ds</span>
+            <a class="link" href="https://github.com/osmandagli/conntracker" target="_blank" rel="noopener">sorgente ↗</a>
+          </footer>
+        </article>
+
+        <!-- ---------- CD2ALLOY ---------- -->
+        <article class="proj" data-skills="python formal" id="p-cd2alloy">
+          <div class="hexline" data-hex="cd2alloy"></div>
+          <header>
+            <h3>cd2alloy</h3>
+            <span class="tag">Python · metodi formali</span>
+          </header>
+          <p>
+            Trasforma diagrammi delle classi UML in modelli <strong>Alloy</strong>, così un progetto si può verificare con il model checking
+            invece di limitarsi a rileggerlo. Disegni il diagramma in PlantUML, esporti l’XMI e apri il <code>.als</code> generato nell’Alloy Analyzer.
+          </p>
+          <ul class="bullets">
+            <li>Lettore XMI → modello delle classi (classi, classi di associazione, enum) → traduttore Alloy</li>
+            <li>Sceglie tra le librerie di base di Alloy a seconda che il diagramma usi enum e valori degli attributi</li>
+            <li>Verificato su soluzioni reali degli esami di Software Engineering 2</li>
+          </ul>
+          <footer>
+            <span class="stack">python · alloy · plantuml · xmi</span>
+            <a class="link" href="https://github.com/osmandagli/cd2alloy" target="_blank" rel="noopener">sorgente ↗</a>
+          </footer>
+        </article>
+
+        <!-- ---------- CLOUD-STORAGE ---------- -->
+        <article class="proj wide" data-skills="go quic networking linux" id="p-cloud-storage">
+          <div class="hexline" data-hex="cloud-storage"></div>
+          <header>
+            <h3>cloud-storage</h3>
+            <span class="tag">Go · HTTP/3</span>
+          </header>
+          <p>
+            Un file server self-hosted su <strong>HTTP/3 / QUIC</strong>. TCP+TLS e QUIC/UDP condividono la stessa porta.
+            I browser arrivano via TCP, vedono <code>Alt-Svc</code> e passano a HTTP/3 da soli.
+          </p>
+          <ul class="bullets">
+            <li>Nomi dei file protetti da path traversal e byte di controllo/NUL</li>
+            <li>Scritture sicure contro le collisioni, che non sovrascrivono mai un file</li>
+            <li>Middleware di autenticazione con API key; il server si rifiuta di partire senza una chiave</li>
+          </ul>
+          <footer>
+            <span class="stack">go · quic-go · chi</span>
+            <a class="link" href="https://github.com/osmandagli/cloud-storage" target="_blank" rel="noopener">sorgente ↗</a>
+          </footer>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ===================== L6 PRESENTATION ===================== -->
+    <section id="encodings" data-section="encodings">
+      <p class="kicker"><span class="layer">L6</span> Presentazione · stessi dati, codifiche diverse</p>
+      <h2>iconv</h2>
+      <p class="section-sub">Il livello di presentazione traduce tra formati diversi. Eccomi in alcuni di questi.</p>
+
+      <div class="enc">
+        <div class="enc-block">
+          <p class="enc-cmd" translate="no">$ iconv -f osman -t <span class="muted">&lt;locale&gt;</span></p>
+          <div class="enc-rows" role="table" aria-label="Lingue parlate">
+            <div class="enc-row" role="row"><span role="cell">tr_TR.UTF-8</span><span role="cell" lang="tr">Türkçe</span><span role="cell" class="ok">madrelingua</span></div>
+            <div class="enc-row" role="row"><span role="cell">en_US.UTF-8</span><span role="cell" lang="en">English</span><span role="cell" class="ok">professionale</span></div>
+            <div class="enc-row" role="row"><span role="cell">it_IT.UTF-8</span><span role="cell">Italiano</span><span role="cell" class="warn">B1, migliora ogni giorno</span></div>
+          </div>
+        </div>
+
+        <div class="enc-block">
+          <p class="enc-cmd" translate="no">$ openssl x509 -in osman.crt -noout -text</p>
+          <pre class="x509" translate="no"><span class="k">Subject:</span> CN = Osman Bugra Dagli
+<span class="k">Issuer:</span>  O = The Linux Foundation, OU = CNCF
+<span class="k">X509v3 Extended Key Usage:</span>
+    <b>Certified Kubernetes Administrator (CKA)</b>
+<span class="k">Verify return code:</span> <span class="ok">0 (ok)</span></pre>
+        </div>
+
+        <div class="enc-block enc-wide">
+          <p class="enc-cmd" translate="no">$ iconv -f osman -t application/pdf &gt; cv.pdf</p>
+          <div class="enc-cv">
+            <p>La stessa storia in una pagina, per chi preferisce la carta. <span class="muted">(in inglese)</span></p>
+            <a class="btn" href="../OsmanBugraDagli_CV.pdf" download>Scarica il CV (PDF)</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== L7 NOW ===================== -->
+    <section id="now" data-section="now">
+      <p class="kicker"><span class="layer">L7</span> Applicazione · cosa sta girando adesso</p>
+      <h2>ps aux | grep now</h2>
+      <div class="ps" role="table" aria-label="Attività in corso">
+        <div class="ps-row head" role="row"><span role="columnheader">PID</span><span role="columnheader">STAT</span><span role="columnheader">COMMAND</span></div>
+        <div class="ps-row" role="row"><span role="cell">1550</span><span role="cell" class="ok">R</span><span role="cell">sto scrivendo la <b>tesi su AF_XDP</b>, laurea a dicembre 2026</span></div>
+        <div class="ps-row" role="row"><span role="cell">4433</span><span role="cell" class="ok">R</span><span role="cell">sto rinforzando <b>cloud-storage</b>: upload in streaming, quote, test</span></div>
+        <div class="ps-row" role="row"><span role="cell">8080</span><span role="cell" class="ok">R</span><span role="cell">cerco ruoli <b>DevOps, platform o SRE</b>, e ruoli nel software di rete vicini alla mia tesi. A Milano o con trasferimento.</span></div>
+        <div class="ps-row" role="row"><span role="cell">1100</span><span role="cell" class="warn">S</span><span role="cell">mi alleno con l’<b>AON Milano Sport</b> per la prossima partita di campionato di tennistavolo</span></div>
+      </div>
+    </section>
+
+    <!-- ===================== CONNECT ===================== -->
+    <section id="connect" data-section="connect">
+      <p class="kicker"><span class="layer">SYN</span> Apri una connessione</p>
+      <h2>Three-way handshake</h2>
+      <ol class="handshake">
+        <li><span class="hs-dir">→</span><span class="hs-flag">SYN</span><span>Mi mandi un messaggio. Ruoli, collaborazioni, o anche solo una bella cattura di pacchetti.</span></li>
+        <li><span class="hs-dir">←</span><span class="hs-flag">SYN-ACK</span><span>Ti rispondo, di solito entro un giorno.</span></li>
+        <li><span class="hs-dir">→</span><span class="hs-flag">ACK</span><span>Connessione <span class="ok">ESTABLISHED</span>.</span></li>
+      </ol>
+      <div class="connect-links">
+        <a class="btn" href="mailto:osman.dagli687@gmail.com">osman.dagli687@gmail.com</a>
+        <a class="btn btn-outline" href="https://github.com/osmandagli" target="_blank" rel="noopener">GitHub ↗</a>
+        <a class="btn btn-outline" href="https://www.linkedin.com/in/osman-bugra-dagli-8273551a5/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a class="btn btn-outline" href="../OsmanBugraDagli_CV.pdf" download>CV.pdf ↓</a>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="site-foot">
+  <span>© <span id="year">2026</span> Osman Bugra Dagli (<span lang="tr">Osman Buğra Dağlı</span>) · Milano</span>
+  <span class="muted">HTML/CSS/JS scritti a mano · nessun framework · nessun tracker · 0 cookie</span>
+</footer>
+
+<!-- ===================== SHELL ===================== -->
+<dialog class="shell" translate="no" id="shell" aria-label="Shell interattiva">
+  <div class="shell-bar">
+    <span class="cap-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span>visitor@osman: ~</span>
+    <button type="button" class="shell-close" id="shell-close" aria-label="Chiudi la shell">esc</button>
+  </div>
+  <div class="shell-out" id="shell-out" aria-live="polite"></div>
+  <form class="shell-in" id="shell-form" autocomplete="off">
+    <label for="shell-input" class="shell-ps1">visitor@osman:~$</label>
+    <input id="shell-input" name="cmd" type="text" autocomplete="off" enterkeyhint="go" spellcheck="false" autocapitalize="off" autocorrect="off">
+  </form>
+</dialog>
+
+<script src="../main.js"></script>
+</body>
+</html>

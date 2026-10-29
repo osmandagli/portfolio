@@ -157,6 +157,11 @@ main:focus { outline: none; } /* focus target for the skip link only */
 }
 .btn-ghost:hover { color: var(--ink); border-color: var(--faint); }
 .btn-ghost.icon { padding: 7px 9px; }
+.lang-switch { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.lang-switch a { font: 500 13px var(--f-mono); color: var(--muted); padding: 7px 10px; text-decoration: none; }
+.lang-switch a[href]:hover { color: var(--ink); }
+.lang-switch a[aria-current] { color: var(--ink); background: var(--line); }
+.lang-switch a:focus-visible { outline-offset: -2px; }
 .kbd {
   font: 600 11px var(--f-mono);
   border: 1px solid var(--line); border-bottom-width: 2px;
@@ -273,7 +278,7 @@ h1 {
 .cap-dots i:nth-child(1) { background: var(--red); opacity: .8; }
 .cap-dots i:nth-child(2) { background: var(--accent); opacity: .8; }
 .cap-dots i:nth-child(3) { background: var(--green); opacity: .8; }
-.cap-count { margin-left: auto; color: var(--faint); }
+.cap-count { margin-left: auto; color: var(--faint); white-space: nowrap; }
 .cap-body {
   font: 400 12.5px/1.75 var(--f-mono);
   padding: 14px 16px; height: 262px; overflow: hidden;

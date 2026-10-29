@@ -9,7 +9,12 @@
 <meta property="og:description" content="DevOps engineer. Kubernetes by day, kernel-bypass networking by night.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://osmandagli.com/">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="it_IT">
 <link rel="canonical" href="https://osmandagli.com/">
+<link rel="alternate" hreflang="en" href="https://osmandagli.com/">
+<link rel="alternate" hreflang="it" href="https://osmandagli.com/it/">
+<link rel="alternate" hreflang="x-default" href="https://osmandagli.com/">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -49,11 +54,17 @@
      with your real info, then remove the class.
      ============================================================ -->
 
+<!-- /it/index.html is the Italian copy. Keep the two in sync when content changes. -->
+
 <header class="topbar">
   <a class="prompt" translate="no" href="#top" aria-label="Back to top">
     <span class="p-user">osman</span><span class="p-at">@</span><span class="p-host">dagli</span><span class="p-path">:~$</span><span class="cursor" aria-hidden="true"></span>
   </a>
   <div class="topbar-actions">
+    <nav class="lang-switch" aria-label="Language">
+      <a aria-current="page" title="English">en</a>
+      <a href="it/" hreflang="it" lang="it" title="Italiano">it</a>
+    </nav>
     <button class="btn-ghost" id="open-shell" type="button" title="Open a shell (press /)">
       <span class="kbd">/</span> shell
     </button>
